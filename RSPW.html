@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Analyse de Données Produit</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+form {
+  display: grid;
+  background-color: #8186f9;
+  grid-template-columns: repeat(2, 1fr); /* Deux colonnes pour les écrans plus grands */
+  gap: 20px;
+  padding: 10px;
+  border-radius: 10px
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  border: 3px solid black;
+  box-sizing: border-box;
+  border-radius: 7px;
+}
+
+button {
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+/* Ajout de styles pour les boutons */
+.button-container {
+  margin-top: 20px;
+  /* Espacement au-dessus des boutons */
+}
+
+.button-container button {
+  margin-right: 30px;
+  /* Espacement entre les boutons */
+}
+
+#ajouterBtn {
+  margin-bottom: 30px;
+  /* Espacement sous le bouton "Ajouter" */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: center;
+}
+
+/* Cacher les sections par défaut */
+#detailsSection,
+#tendancesSection,
+#analysesSection {
+  display: none;
+}
+
+/* Style pour la barre de chargement */
+#loadingBar {
+  width: 0%;
+  height: 5px;
+  background-color: green;
+  transition: width 0.5s ease-in-out;
+}
+
+/* Media Queries pour les smartphones */
+@media (max-width: 600px) { 
+  form {
+    grid-template-columns: 1fr; /* Une seule colonne pour les smartphones */
+    gap: 15px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select,
+  input[type="date"] {
+    padding: 18px; /* Augmentation significative du padding */
+    font-size: 16px;
+    height: 35px
+  }
+
+  /* Assurer que le champ de type "date" est suffisamment grand */
+  input[type="date"] {
+    -webkit-appearance: none; /* Supprimer l'apparence par défaut */
+    -moz-appearance: none;
+    appearance: none;
+    height: 35px; /* Hauteur fixe pour le champ de date */
+  }
+
+  .button-container button {
+    padding: 12px 24px; /* Augmentation du padding des boutons */
+    font-size: 18px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  table {
+    font-size: 14px; /* Réduire la taille de la police du tableau */
+  }
+
+  th,
+  td {
+    padding: 6px; /* Réduire le padding des cellules du tableau */
+  }
+}
+  </style>
+</head>
+
+<body>
+
+  <h1>Analyse de Données Produit</h1>
+  <h2>Ajouter un nouveau produit</h2>
+
+  <form id="productForm">
+    <!-- Chaque champ occupe maintenant sa propre ligne -->
+    <div>
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" required>
+    </div>
+    <div>
+      <label for="quantite">Quantité:</label>
+      <input type="number" id="quantite" name="quantite" required oninput="calculerTauxCroissance()">
+    </div>
+    <div>
+      <label for="categorie">Catégorie:</label>
+      <input type="text" id="categorie" name="categorie">
+    </div>
+    <div>
+      <label for="designation">Désignation:</label>
+      <input type="text" id="designation" name="designation">
+    </div>
+    <div>
+      <label for="prixVente">Prix de vente:</label>
+      <input type="number" id="prixVente" name="prixVente" oninput="calculerMargeBenefice()">
+    </div>
+    <div>
+      <label for="netBrut">Net Brut:</label>
+      <input type="number" id="netBrut" name="netBrut" oninput="calculerCoutReviens()">
+    </div>
+    <div>
+      <label for="prixBrut">Prix brut:</label>
+      <input type="number" id="prixBrut" name="prixBrut">
+    </div>
+    <div>
+      <label for="freight">Freight:</label>
+      <input type="number" id="freight" name="freight" oninput="calculerCoutReviens()">
+    </div>
+    <div>
+      <label for="douaneTransport">Douane et Transport:</label>
+      <input type="number" id="douaneTransport" name="douaneTransport" oninput="calculerCoutReviens()">
+    </div>
+    <div>
+      <label for="fraisTransfert">Frais de transfert et Tenue de Compte:</label>
+      <input type="number" id="fraisTransfert" name="fraisTransfert" oninput="calculerCoutReviens()">
+    </div>
+    <div>
+      <label for="impotDocument">Impôt et Document:</label>
+      <input type="number" id="impotDocument" name="impotDocument" oninput="calculerCoutReviens()">
+    </div>
+    <div>
+      <label for="reparation">Réparation:</label>
+      <input type="number" id="reparation" name="reparation" oninput="calculerCoutReviens()">
+    </div>
+    <div>
+      <label for="typeClient">Type de Client:</label>
+      <select id="typeClient" name="typeClient">
+        <option value="Ancien">Ancien</option>
+        <option value="Nouveau">Nouveau</option>
+      </select>
+    </div>
+    <div>
+      <label for="ville">Ville:</label>
+      <input type="text" id="ville" name="ville">
+    </div>
+    <div>
+      <label for="commande">Commande:</label>
+      <input type="number" id="commande" name="commande">
+    </div>
+    <div>
+      <label for="dureeEcoulement">Durée d'écoulement:</label>
+      <input type="text" id="dureeEcoulement" name="dureeEcoulement">
+    </div>
+    <div>
+      <label for="coutReviens">Coût de Reviens du Produit:</label>
+      <input type="number" id="coutReviens" name="coutReviens" readonly>
+    </div>
+    <div>
+      <label for="margeBenefice">Marge Bénéfice:</label>
+      <input type="number" id="margeBenefice" name="margeBenefice" readonly>
+    </div>
+    <div>
+      <label for="tauxCroissance">Taux de croissance (%):</label>
+      <input type="number" id="tauxCroissance" name="tauxCroissance" readonly>
+    </div>
+  </form>
+
+  <div class="button-container">
+    <button id="ajouterBtn" onclick="ajouterProduit()">Ajouter</button><br>
+    <button onclick="afficherDetails()">Détails des Produits</button>
+    <button onclick="afficherTendances()">Tendances des Produits</button>
+    <button onclick="afficherAnalyses()">Analyses des Produits</button>
+  </div>
+
+  <!-- Barre de chargement -->
+  <div id="loadingBar"></div>
+
+  <!-- Section des détails avec le tableau -->
+  <div id="detailsSection">
+    <h2>Tableau des produits</h2>
+    <table id="produitTable">
+      <thead>
+        <tr>
+          <th colspan="1">Données de base</th>
+          <th colspan="4">Informations du produit</th>
+          <th colspan="2">Prix d'achat</th>
+          <th colspan="5">Autre Dépense</th>
+          <th rowspan="2">Total</th>
+          <th colspan="3">Marketing et Clients</th>
+          <th colspan="2">Informations Financières</th>
+          <th colspan="2">Indicateurs de croissance</th>
+          <th>Actions</th>
+        </tr>
+        <tr>
+          <th>Date</th>
+          <th>Quantité</th>
+          <th>Désignation</th>
+          <th>Catégorie</th>
+          <th>Prix de vente</th>
+          <th>Prix Brut</th>
+          <th>Net Brut</th>
+          <th>Freight</th>
+          <th>Douane et Transport</th>
+          <th>Frais de Transfert et Tenue de Compte</th>
+          <th>Impôt et Document</th>
+          <th>Réparation</th>
+          <th>Type de Client</th>
+          <th>Ville</th>
+          <th>Commande</th>
+          <th>Coût de Reviens du Produit</th>
+          <th>Marge Bénéfice</th>
+          <th>Taux de croissance</th>
+          <th>Durée d'écoulement</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les lignes de produits seront ajoutées ici -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section des tendances avec le graphique -->
+  <div id="tendancesSection">
+    <h2>Tendances des Produits</h2>
+    <canvas id="tendanceChart"></canvas>
+  </div>
+
+  <!-- Section des analyses -->
+  <div id="analysesSection">
+    <h2>Analyses des Produits</h2>
+    <div>
+      <label for="analysePeriode">Période d'analyse:</label>
+      <select id="analysePeriode">
+        <option value="hebdomadaire">Hebdomadaire</option>
+        <option value="mensuelle">Mensuelle</option>
+        <option value="annuelle">Annuelle</option>
+      </select>
+    </div>
+    <div id="resultatsAnalyse">
+      <!-- Les résultats de l'analyse seront affichés ici -->
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Initialisez Firebase (remplacez les valeurs par vos propres identifiants)
+    var firebaseConfig = {
+      apiKey: "AIzaSyDTxa2nD-EVgmSRrHWciqs7xdOkp12t5yA",
+      authDomain: "razia-sarl.firebaseapp.com",
+      databaseURL: "https://razia-sarl-default-rtdb.firebaseio.com",
+      projectId: "razia-sarl",
+      storageBucket: "razia-sarl.appspot.com",
+      messagingSenderId: "490482635351",
+      appId: "1:490482635351:web:fc82421e1907576a090912",
+      measurementId: "G-Q2EWH7HJ8T"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    var database = firebase.database();
+
+    function ajouterProduit() {
+      // Vérifier si tous les champs sont remplis
+      var inputs = document.getElementById("productForm").querySelectorAll("input, select");
+      for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].value === "") {
+          alert("Veuillez remplir tous les champs du formulaire.");
+          return; // Arrêter l'exécution de la fonction
+        }
+      }
+
+      // Afficher la barre de chargement
+      document.getElementById("loadingBar").style.width = "0%";
+
+      var productData = {
+        date: document.getElementById("date").value,
+        quantite: document.getElementById("quantite").value,
+        categorie: document.getElementById("categorie").value,
+        designation: document.getElementById("designation").value,
+        prixVente: document.getElementById("prixVente").value,
+        netBrut: document.getElementById("netBrut").value,
+        prixBrut: document.getElementById("prixBrut").value,
+        freight: document.getElementById("freight").value,
+        douaneTransport: document.getElementById("douaneTransport").value,
+        fraisTransfert: document.getElementById("fraisTransfert").value,
+        impotDocument: document.getElementById("impotDocument").value,
+        reparation: document.getElementById("reparation").value,
+        typeClient: document.getElementById("typeClient").value,
+        ville: document.getElementById("ville").value,
+        commande: document.getElementById("commande").value,
+        dureeEcoulement: document.getElementById("dureeEcoulement").value,
+        coutReviens: document.getElementById("coutReviens").value,
+        margeBenefice: document.getElementById("margeBenefice").value,
+        tauxCroissance: document.getElementById("tauxCroissance").value
+      };
+
+      database.ref('produits').push(productData)
+        .then(function () {
+          // Animer la barre de chargement
+          document.getElementById("loadingBar").style.width = "100%";
+
+          // Attendre une courte durée pour que l'animation se termine
+          setTimeout(function () {
+            alert("Produit ajouté avec succès !");
+            document.getElementById("productForm").reset();
+            document.getElementById("loadingBar").style.width = "0%"; // Réinitialiser la barre de chargement
+          }, 500); // Attendre 500 millisecondes (0.5 seconde)
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de l'ajout du produit:", error);
+          alert("Une erreur est survenue.");
+          document.getElementById("loadingBar").style.width = "0%"; // Réinitialiser la barre de chargement en cas d'erreur
+        });
+    }
+
+    function afficherDetails() {
+      var detailsSection = document.getElementById("detailsSection");
+      var tendancesSection = document.getElementById("tendancesSection");
+      var analysesSection = document.getElementById("analysesSection");
+
+      detailsSection.style.display = "block"; // Afficher les détails
+      tendancesSection.style.display = "none"; // Cacher les tendances
+      analysesSection.style.display = "none"; // Cacher les analyses
+      remplirTableau(); // Remplir le tableau avec les données
+    }
+
+    function remplirTableau() {
+      var productTable = document.getElementById("produitTable").getElementsByTagName('tbody')[0];
+      productTable.innerHTML = ''; // Effacer le contenu du tableau
+
+      database.ref('produits').once('value')
+        .then(function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
+            var product = childSnapshot.val();
+            var row = productTable.insertRow();
+
+            // Date
+            var dateCell = row.insertCell();
+            dateCell.textContent = product.date;
+
+            // Quantité
+            var quantiteCell = row.insertCell();
+            quantiteCell.textContent = product.quantite;
+
+            // Désignation
+            var designationCell = row.insertCell();
+            designationCell.textContent = product.designation;
+
+            // Catégorie
+            var categorieCell = row.insertCell();
+            categorieCell.textContent = product.categorie;
+
+            // Prix de vente
+            var prixVenteCell = row.insertCell();
+            prixVenteCell.textContent = product.prixVente;
+
+            // Prix Brut
+            var prixBrutCell = row.insertCell();
+            prixBrutCell.textContent = product.prixBrut;
+
+            // Net Brut
+            var netBrutCell = row.insertCell();
+            netBrutCell.textContent = product.netBrut;
+
+            // Freight
+            var freightCell = row.insertCell();
+            freightCell.textContent = product.freight;
+
+            // Douane et Transport
+            var douaneTransportCell = row.insertCell();
+            douaneTransportCell.textContent = product.douaneTransport;
+
+            // Frais de transfert et Tenue de Compte
+            var fraisTransfertCell = row.insertCell();
+            fraisTransfertCell.textContent = product.fraisTransfert;
+
+            // Impôt et Document
+            var impotDocumentCell = row.insertCell();
+            impotDocumentCell.textContent = product.impotDocument;
+
+            // Réparation
+            var reparationCell = row.insertCell();
+            reparationCell.textContent = product.reparation;
+
+            // Calculer le total des dépenses
+            var totalDepenses = parseFloat(product.freight) +
+              parseFloat(product.douaneTransport) +
+              parseFloat(product.fraisTransfert) +
+              parseFloat(product.impotDocument) +
+              parseFloat(product.reparation);
+
+            // Total
+            var totalCell = row.insertCell();
+            totalCell.textContent = totalDepenses.toFixed(2); // Afficher le total avec 2 décimales
+
+            // Type de Client
+            var typeClientCell = row.insertCell();
+            typeClientCell.textContent = product.typeClient;
+
+            // Ville
+            var villeCell = row.insertCell();
+            villeCell.textContent = product.ville;
+
+            // Commande
+            var commandeCell = row.insertCell();
+            commandeCell.textContent = product.commande;
+
+            // Coût de Reviens du Produit
+            var coutReviensCell = row.insertCell();
+            coutReviensCell.textContent = product.coutReviens;
+
+            // Marge Bénéfice
+            var margeBeneficeCell = row.insertCell();
+            margeBeneficeCell.textContent = product.margeBenefice;
+
+            // Taux de croissance
+            var tauxCroissanceCell = row.insertCell();
+            tauxCroissanceCell.textContent = product.tauxCroissance;
+
+            // Durée d'écoulement
+            var dureeEcoulementCell = row.insertCell();
+            dureeEcoulementCell.textContent = product.dureeEcoulement;
+
+            // Actions (cellule vide pour l'instant)
+            var actionsCell = row.insertCell();
+            // Vous pouvez ajouter des boutons ou des liens ici
+          });
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de la récupération des détails des produits:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    var tendanceChart = null; // Variable pour stocker l'objet du graphique
+
+    function afficherTendances() {
+      var detailsSection = document.getElementById("detailsSection");
+      var tendancesSection = document.getElementById("tendancesSection");
+      var analysesSection = document.getElementById("analysesSection");
+
+      detailsSection.style.display = "none"; // Cacher les détails
+      tendancesSection.style.display = "block"; // Afficher les tendances
+      analysesSection.style.display = "none"; // Cacher les analyses
+      creerGraphique(); // Créer le graphique
+    }
+
+    function creerGraphique() {
+      // Récupérer les données de Firebase pour le graphique
+      database.ref('produits').once('value')
+        .then(function (snapshot) {
+          var labels = [];
+          var quantiteData = [];
+          var commandeData = [];
+          var coutReviensData = [];
+          var margeBeneficeData = [];
+          var tauxCroissanceData = [];
+
+          snapshot.forEach(function (childSnapshot) {
+            var product = childSnapshot.val();
+            labels.push(product.date);
+            quantiteData.push(parseFloat(product.quantite) || 0);
+            commandeData.push(parseFloat(product.commande) || 0);
+            coutReviensData.push(parseFloat(product.coutReviens) || 0);
+            margeBeneficeData.push(parseFloat(product.margeBenefice) || 0);
+            tauxCroissanceData.push(parseFloat(product.tauxCroissance) || 0);
+          });
+
+          // Créer le graphique avec Chart.js
+          var ctx = document.getElementById('tendanceChart').getContext('2d');
+          tendanceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: 'Quantité',
+                  data: quantiteData,
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Commande',
+                  data: commandeData,
+                  borderColor: 'rgba(255, 99, 132, 1)',
+                  backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Coût de Reviens',
+                  data: coutReviensData,
+                  borderColor: 'rgba(255, 206, 86, 1)',
+                  backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Marge Bénéfice',
+                  data: margeBeneficeData,
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Taux de croissance',
+                  data: tauxCroissanceData,
+                  borderColor: 'rgba(153, 102, 255, 1)',
+                  backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                  borderWidth: 1
+                }
+              ]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de la récupération des données pour le graphique:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    function calculerTauxCroissance() {
+      var quantiteActuelle = parseFloat(document.getElementById("quantite").value) || 0;
+      var dateActuelle = new Date(document.getElementById("date").value);
+
+      // Trouver la quantité du mois précédent dans Firebase
+      database.ref('produits')
+        .orderByChild('date')
+        .endAt(dateActuelle.getFullYear() + '-' + (dateActuelle.getMonth()) + '-01') // Exclure le mois actuel
+        .limitToLast(1) // Récupérer le dernier enregistrement du mois précédent
+        .once('value')
+        .then(function (snapshot) {
+          var quantitePrecedente = 0;
+          snapshot.forEach(function (childSnapshot) {
+            quantitePrecedente = parseFloat(childSnapshot.val().quantite) || 0;
+          });
+
+          // Calculer le taux de croissance
+          var tauxCroissance = 0;
+          if (quantitePrecedente !== 0) {
+            tauxCroissance = ((quantiteActuelle - quantitePrecedente) / quantitePrecedente) * 100;
+          }
+
+          // Afficher le taux de croissance dans le champ
+          document.getElementById("tauxCroissance").value = tauxCroissance.toFixed(2);
+        })
+        .catch(function (error) {
+          console.error("Erreur lors du calcul du taux de croissance:", error);
+        });
+    }
+
+    function calculerCoutReviens() {
+      var netBrut = parseFloat(document.getElementById("netBrut").value) || 0;
+      var freight = parseFloat(document.getElementById("freight").value) || 0;
+      var douaneTransport = parseFloat(document.getElementById("douaneTransport").value) || 0;
+      var fraisTransfert = parseFloat(document.getElementById("fraisTransfert").value) || 0;
+      var impotDocument = parseFloat(document.getElementById("impotDocument").value) || 0;
+      var reparation = parseFloat(document.getElementById("reparation").value) || 0;
+
+      var coutReviens = netBrut + freight + douaneTransport + fraisTransfert + impotDocument + reparation;
+      document.getElementById("coutReviens").value = coutReviens.toFixed(2);
+
+      calculerMargeBenefice(); // Mettre à jour la marge bénéficiaire
+    }
+
+    function calculerMargeBenefice() {
+      var prixVente = parseFloat(document.getElementById("prixVente").value) || 0;
+      var coutReviens = parseFloat(document.getElementById("coutReviens").value) || 0;
+
+      var margeBenefice = prixVente - coutReviens;
+      document.getElementById("margeBenefice").value = margeBenefice.toFixed(2);
+    }
+
+    function afficherAnalyses() {
+      var detailsSection = document.getElementById("detailsSection");
+      var tendancesSection = document.getElementById("tendancesSection");
+      var analysesSection = document.getElementById("analysesSection");
+
+      detailsSection.style.display = "none"; // Cacher les détails
+      tendancesSection.style.display = "none"; // Cacher les tendances
+      analysesSection.style.display = "block"; // Afficher les analyses
+
+      // Appeler la fonction d'analyse avec la période par défaut (mensuelle)
+      analyserProduits("mensuelle");
+    }
+
+    function analyserProduits(periode) {
+      var resultatsAnalyse = document.getElementById("resultatsAnalyse");
+      resultatsAnalyse.innerHTML = ''; // Effacer les résultats précédents
+
+      database.ref('produits').once('value')
+        .then(function (snapshot) {
+          var donneesAnalyse = {}; // Objet pour stocker les données d'analyse
+
+          snapshot.forEach(function (childSnapshot) {
+            var product = childSnapshot.val();
+            var date = new Date(product.date);
+
+            // Déterminer la clé pour la période d'analyse
+            var clePeriode = "";
+            if (periode === "hebdomadaire") {
+              // Numéro de la semaine
+              clePeriode = "Semaine " + getWeekNumber(date);
+            } else if (periode === "mensuelle") {
+              // Mois et année
+              clePeriode = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+            } else if (periode === "annuelle") {
+              // Année
+              clePeriode = date.getFullYear();
+            }
+
+            // Initialiser les données pour la période si nécessaire
+            if (!donneesAnalyse[clePeriode]) {
+              donneesAnalyse[clePeriode] = {
+                quantite: 0,
+                commande: 0,
+                coutReviens: 0,
+                margeBenefice: 0
+              };
+            }
+
+            // Ajouter les données du produit aux données de la période
+            donneesAnalyse[clePeriode].quantite += parseFloat(product.quantite) || 0;
+            donneesAnalyse[clePeriode].commande += parseFloat(product.commande) || 0;
+            donneesAnalyse[clePeriode].coutReviens += parseFloat(product.coutReviens) || 0;
+            donneesAnalyse[clePeriode].margeBenefice += parseFloat(product.margeBenefice) || 0;
+          });
+
+          // Afficher les résultats de l'analyse
+          for (var cle in donneesAnalyse) {
+            var donnees = donneesAnalyse[cle];
+            var resultatDiv = document.createElement('div');
+            resultatDiv.innerHTML = '<h3>' + cle + '</h3>' +
+              '<p>Quantité: ' + donnees.quantite.toFixed(2) + '</p>' +
+              '<p>Commande: ' + donnees.commande.toFixed(2) + '</p>' +
+              '<p>Coût de Reviens: ' + donnees.coutReviens.toFixed(2) + '</p>' +
+              '<p>Marge Bénéfice: ' + donnees.margeBenefice.toFixed(2) + '</p>';
+            resultatsAnalyse.appendChild(resultatDiv);
+          }
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de la récupération des données pour l'analyse:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    // Fonction pour obtenir le numéro de la semaine
+    function getWeekNumber(d) {
+      // Copier la date pour ne pas modifier l'original
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      // Définir le jour de la semaine à jeudi dans la ligne de temps locale
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      // Obtenir le premier jour de l'année
+      var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      // Calculer le numéro de la semaine
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+
+    // Écouteur d'événement pour le changement de période d'analyse
+    document.getElementById("analysePeriode").addEventListener('change', function () {
+      analyserProduits(this.value);
+    });
+  </script>
+
+</body>
+
+</html>
