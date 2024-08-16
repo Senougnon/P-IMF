@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plateforme de Microfinance</title>
     <style>
-  /* Styles généraux */
+        /* Styles généraux */
 body {
   font-family: sans-serif;
   margin: 0;
@@ -154,6 +154,14 @@ button[type="submit"] {
   border-radius: 5px;
 }
 
+/* Styles pour le formulaire d'enregistrement des partenaires */
+#partenaireForm {
+  margin-top: 20px;
+  background-color: #F9E892;
+  padding: 20px;
+  border-radius: 5px;
+}
+
 /* Styles pour la barre de chargement */
 .loading {
   display: none;
@@ -271,7 +279,7 @@ button[type="submit"] {
 </head>
 <body>
     <div class="container">
-        <h1>Application de Microfinance</h1>
+        <h1>Plateforme de Microfinance</h1>
 
         <div id="imageCarousel">
             <img src="https://firebasestorage.googleapis.com/v0/b/microfinance-68811.appspot.com/o/Image%20Accueil%2FImage%20IMF1.jpeg?alt=media&token=030dc305-b724-4a41-aca7-f0d345ab8bb2" alt="Image 1">
@@ -282,7 +290,7 @@ button[type="submit"] {
 
         <div class="tab">
             <button class="tablinks" onclick="openTab(event, 'adherents')">Enregistrement des Adhérents</button>
-            <button class="tablinks" onclick="openTab(event, 'operations')">Enregistrement des opérations</button>
+            <button class="tablinks" onclick="openTab(event, 'operations')">Enregistrement des Opérations & Partenaires</button>
             <button class="tablinks" onclick="openTab(event, 'details')">Détails Généraux</button>
             <button class="tablinks" onclick="openTab(event, 'tendances')">
                 <span class="long-text">Tendances graphiques</span>
@@ -380,19 +388,38 @@ button[type="submit"] {
         </div>
 
         <div id="operations" class="tabcontent">
-            <h2>Enregistrement des opérations</h2>
+            <h2>Enregistrement des Opérations</h2>
             <form id="operationForm">
                 <div class="form-field">
                     <label for="typeOperation">Type d'opération:</label>
-                    <select id="typeOperation" required>
+                    <select id="typeOperation" required onchange="afficherTypeOperation()">
                         <option value="">Sélectionnez</option>
                         <option value="mise">Mise</option>
                         <option value="pret">Prêt</option>
                         <option value="tontine">Tontine</option>
-                        <option value="tontine">Frais d'Adhésion</option>
-                        <option value="tontine">Retrait</option>
+                        <option value="FraisAdhesion">Frais d'Adhésion</option>
                     </select>
                 </div>
+
+                <div class="form-field" id="typeTontineField" style="display: none;">
+                  <label for="typeTontine">Type de Tontine:</label>
+                  <select id="typeTontine">
+                    <option value="Depot">Dépôt</option>
+                    <option value="Retrait">Retrait</option>
+                  </select>
+                </div>
+
+                <div class="form-field" id="typePretField" style="display: none;">
+                    <label for="typePret">Type de Prêt:</label>
+                    <select id="typePret">
+                      <option value="Pret">Prêt</option>
+                      <option value="Remboursement">Remboursement</option>
+                      <option value="Interet">Intérêt</option>
+                      <option value="Penalite">Pénalité</option>
+                      <option value="FraisDossier">Frais de dossier</option>
+                    </select>
+                </div>
+
                 <div class="form-field">
                     <label for="adherent">Adhérent:</label>
                     <select id="adherent" required>
@@ -413,6 +440,36 @@ button[type="submit"] {
                 </div>
 
                 <button type="submit">Enregistrer l'opération</button>
+            </form>
+
+            <h2>Enregistrement des Partenaires</h2>
+            <form id="partenaireForm">
+                <div class="form-field">
+                    <label for="nomPartenaire">Nom et Prénoms du Partenaire:</label>
+                    <input type="text" id="nomPartenaire" required>
+                </div>
+                <div class="form-field">
+                    <label for="montantPartenariat">Montant du Partenariat:</label>
+                    <input type="number" id="montantPartenariat" required>
+                </div>
+                <div class="form-field">
+                    <label for="datePartenariat">Date de Partenariat:</label>
+                    <input type="date" id="datePartenariat" required>
+                </div>
+                <div class="form-field">
+                    <label for="tauxRemuneration">Taux de Rémunération:</label>
+                    <input type="number" id="tauxRemuneration" required>
+                </div>
+                <div class="form-field">
+                    <label for="dateFin">Date de Fin:</label>
+                    <input type="date" id="dateFin" required>
+                </div>
+
+                <div id="partenaireLoading" class="loading">
+                    <div class="bar"></div>
+                </div>
+
+                <button type="submit">Enregistrer le Partenaire</button>
             </form>
         </div>
 
@@ -444,6 +501,7 @@ button[type="submit"] {
                 <p>Total des mises : <span id="totalMises">0</span> FCFA</p>
                 <p>Total des prêts : <span id="totalPrets">0</span> FCFA</p>
                 <p>Total des tontines : <span id="totalTontines">0</span> FCFA</p>
+                <p>Total des Commissions : <span id="totalCommissions">0</span> FCFA</p>
                 <p>Nombre d'adhérents : <span id="nombreAdherents">0</span></p>
                 <p>Total général : <span id="totalGeneral">0</span> FCFA</p>
             </div>
@@ -481,38 +539,10 @@ button[type="submit"] {
             <h2>Tendances graphiques</h2>
             <canvas id="myChart"></canvas>
         </div>
-
-        <div id="analyses" class="tabcontent">
-            <h2>Analyses</h2>
-
-            <div class="analysis-section">
-                <h3>Analyse Hebdomadaire</h3>
-                <p>Total des mises : <span id="totalMisesHebdomadaire2">0</span> FCFA</p>
-                <p>Total des prêts : <span id="totalPretsHebdomadaire2">0</span> FCFA</p>
-                <p>Total des tontines : <span id="totalTontinesHebdomadaire2">0</span> FCFA</p>
-                <p>Total général : <span id="totalGeneralHebdomadaire2">0</span> FCFA</p>
-            </div>
-
-            <div class="analysis-section">
-                <h3>Analyse Mensuelle</h3>
-                <p>Total des mises : <span id="totalMisesMensuelle2">0</span> FCFA</p>
-                <p>Total des prêts : <span id="totalPretsMensuelle2">0</span> FCFA</p>
-                <p>Total des tontines : <span id="totalTontinesMensuelle2">0</span> FCFA</p>
-                <p>Total général : <span id="totalGeneralMensuelle2">0</span> FCFA</p>
-            </div>
-
-            <div class="analysis-section">
-                <h3>Analyse Annuelle</h3>
-                <p>Total des mises : <span id="totalMisesAnnuelle2">0</span> FCFA</p>
-                <p>Total des prêts : <span id="totalPretsAnnuelle2">0</span> FCFA</p>
-                <p>Total des tontines : <span id="totalTontinesAnnuelle2">0</span> FCFA</p>
-                <p>Total général : <span id="totalGeneralAnnuelle2">0</span> FCFA</p>
-            </div>
-        </div>
     </div>
 
     <script>
-      // Configuration de Firebase (remplacez par vos propres informations)
+        // Configuration de Firebase (remplacez par vos propres informations)
 const firebaseConfig = {
     apiKey: "AIzaSyAn4gdgbPBESE1ry9140ngM-Av5hq0kAVQ",
   authDomain: "microfinance-68811.firebaseapp.com",
@@ -543,14 +573,31 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
 
+    // Appeler les fonctions de chargement des données après l'affichage de l'onglet
     if (tabName === 'details') {
         chargerDetailsAdherentsEtGlobaux();
     } else if (tabName === 'tendances') {
         chargerTendances();
     } else if (tabName === 'operations') {
         chargerListeAdherents();
-    } else if (tabName === 'analyses') {
-        afficherAnalyses();
+    }
+}
+
+// Fonction pour afficher le champ "Type de Tontine" ou "Type de Prêt" en fonction du type d'opération
+function afficherTypeOperation() {
+    const typeOperation = document.getElementById('typeOperation').value;
+    const typeTontineField = document.getElementById('typeTontineField');
+    const typePretField = document.getElementById('typePretField');
+
+    if (typeOperation === 'tontine') {
+        typeTontineField.style.display = 'block';
+        typePretField.style.display = 'none';
+    } else if (typeOperation === 'pret') {
+        typePretField.style.display = 'block';
+        typeTontineField.style.display = 'none';
+    } else {
+        typeTontineField.style.display = 'none';
+        typePretField.style.display = 'none';
     }
 }
 
@@ -657,10 +704,22 @@ document.getElementById('operationForm').addEventListener('submit', function (e)
     e.preventDefault();
     showLoading('operationLoading'); // Afficher la barre de chargement
 
+    const typeOperation = document.getElementById('typeOperation').value;
+    const typeTontine = document.getElementById('typeTontine') ? document.getElementById('typeTontine').value : null;
+    const typePret = document.getElementById('typePret') ? document.getElementById('typePret').value : null;
+    let montant = parseFloat(document.getElementById('montant').value);
+
+    // Si le type d'opération est "tontine" et le type de tontine est "Retrait", soustraire le montant du total
+    if (typeOperation === 'tontine' && typeTontine === 'Retrait') {
+        montant = -montant;
+    }
+
     const operation = {
-        type: document.getElementById('typeOperation').value,
+        type: typeOperation,
+        typeTontine: typeTontine,
+        typePret: typePret,
         adherentId: document.getElementById('adherent').value,
-        montant: parseFloat(document.getElementById('montant').value),
+        montant: montant,
         date: document.getElementById('dateOperation').value
     };
 
@@ -678,9 +737,47 @@ document.getElementById('operationForm').addEventListener('submit', function (e)
                 hideLoading('operationLoading'); // Masquer la barre de chargement
                 alert('Opération enregistrée avec succès!');
                 document.getElementById('operationForm').reset();
+                // Masquer les champs "Type de Tontine" et "Type de Prêt" après l'enregistrement
+                document.getElementById('typeTontineField').style.display = 'none';
+                document.getElementById('typePretField').style.display = 'none';
             })
             .catch((error) => {
                 console.error("Erreur lors de l'enregistrement de l'opération: ", error);
+            });
+    }, 3000);
+});
+
+// Enregistrement d'un partenaire
+document.getElementById('partenaireForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    showLoading('partenaireLoading'); // Afficher la barre de chargement
+
+    // Récupérer les informations du partenaire
+    const partenaire = {
+        nomPartenaire: document.getElementById('nomPartenaire').value,
+        montantPartenariat: parseFloat(document.getElementById('montantPartenariat').value),
+        datePartenariat: document.getElementById('datePartenariat').value,
+        tauxRemuneration: parseFloat(document.getElementById('tauxRemuneration').value),
+        dateFin: document.getElementById('dateFin').value
+    };
+
+    // Mettre à jour la largeur de la barre de chargement
+    updateLoading('partenaireLoading', 20);
+    setTimeout(() => updateLoading('partenaireLoading', 50), 1000);
+    setTimeout(() => updateLoading('partenaireLoading', 80), 2000);
+    setTimeout(() => {
+        updateLoading('partenaireLoading', 100); // Barre à 100%
+
+        // Enregistrer le partenaire dans la Realtime Database
+        const partenairesRef = database.ref('partenaires');
+        partenairesRef.push(partenaire) // Enregistrer dans la Realtime Database
+            .then(() => {
+                hideLoading('partenaireLoading'); // Masquer la barre de chargement
+                alert('Partenaire enregistré avec succès!');
+                document.getElementById('partenaireForm').reset();
+            })
+            .catch((error) => {
+                console.error("Erreur lors de l'enregistrement du partenaire: ", error);
             });
     }, 3000);
 });
@@ -696,53 +793,110 @@ function chargerDetailsAdherentsEtGlobaux() {
         operationsRef.on('value', (operationsSnapshot) => {
             const operationsData = operationsSnapshot.val() || [];
             const detailsTable = document.getElementById('detailsTable').getElementsByTagName('tbody')[0];
-            detailsTable.innerHTML = '';
+            detailsTable.innerHTML = ''; // Vider le tableau avant de le remplir
             let totalGeneralOperations = 0;
             let totalMises = 0;
             let totalPrets = 0;
             let totalTontines = 0;
+            let totalFraisAdhesion = 0;
+            let totalCommissions = 0; // Ajouter une variable pour le total des commissions
+
+            // Créer un objet pour stocker les totaux de prêts accordés et remboursés par adhérent
+            const pretsAdherents = {};
 
             for (const adherentKey in adherentsData) {
                 const adherent = adherentsData[adherentKey];
                 let totalMisesAdherent = 0;
-                let totalPretsAdherent = 0;
+                let totalPretsAccordesAdherent = 0; // Total des prêts accordés à l'adhérent
+                let totalPretsRembouresAdherent = 0; // Total des prêts remboursés par l'adhérent
                 let totalTontinesAdherent = 0;
+                let totalFraisAdhesionAdherent = 0;
+                let premiereMise = true; // Indicateur pour la première mise
+
+                // Initialiser les totaux de prêts pour l'adhérent
+                pretsAdherents[adherent.nom] = {
+                    accordes: 0,
+                    rembourses: 0
+                };
 
                 for (const operationKey in operationsData) {
                     const operation = operationsData[operationKey];
                     if (operation.adherentId === adherent.nom) {
-                        if (operation.type === 'mise') {
-                            totalMisesAdherent += operation.montant;
-                            totalMises += operation.montant;
-                        } else if (operation.type === 'pret') {
-                            totalPretsAdherent += operation.montant;
-                            totalPrets += operation.montant;
-                        } else if (operation.type === 'tontine') {
-                            totalTontinesAdherent += operation.montant;
-                            totalTontines += operation.montant;
+                        switch (operation.type) {
+                            case 'mise':
+                                if (premiereMise) {
+                                    totalCommissions += operation.montant; // Ajouter au total des commissions
+                                    premiereMise = false;
+                                } else {
+                                    totalMisesAdherent += operation.montant;
+                                    totalMises += operation.montant;
+                                }
+                                break;
+                            case 'pret':
+                                // Gérer les différents types de prêt
+                                switch (operation.typePret) {
+                                    case 'Pret':
+                                        totalPretsAccordesAdherent += operation.montant;
+                                        pretsAdherents[adherent.nom].accordes += operation.montant;
+                                        totalPrets += operation.montant;
+                                        break;
+                                    case 'Remboursement':
+                                        totalPretsRembouresAdherent += operation.montant;
+                                        pretsAdherents[adherent.nom].rembourses += operation.montant;
+                                        // Soustraire le remboursement du total des prêts
+                                        totalPrets -= operation.montant; 
+                                        break;
+                                    case 'Interet':
+                                    case 'Penalite':
+                                    case 'FraisDossier':
+                                        // Ajouter les autres types de prêt au total des prêts
+                                        totalPretsAccordesAdherent += operation.montant;
+                                        pretsAdherents[adherent.nom].accordes += operation.montant;
+                                        totalPrets += operation.montant;
+                                        break;
+                                }
+                                break;
+                            case 'tontine':
+                                totalTontinesAdherent += operation.montant;
+                                totalTontines += operation.montant;
+                                break;
+                            case 'FraisAdhesion':
+                                totalFraisAdhesionAdherent += operation.montant;
+                                totalFraisAdhesion += operation.montant;
+                                break;
                         }
                     }
                 }
 
-                const totalAdherent = totalMisesAdherent + totalPretsAdherent + totalTontinesAdherent;
+                // Calculer le total des prêts de l'adhérent en fonction des prêts accordés et remboursés
+                let totalPretsAdherent = pretsAdherents[adherent.nom].accordes - pretsAdherents[adherent.nom].rembourses;
+
+                // Vérifier si le total des prêts de l'adhérent est négatif, et le mettre à 0 si c'est le cas
+                if (totalPretsAdherent < 0) {
+                    totalPretsAdherent = 0;
+                }
+
+                const totalAdherent = totalMisesAdherent + totalPretsAdherent + totalTontinesAdherent + totalFraisAdhesionAdherent;
                 totalGeneralOperations += totalAdherent;
 
                 const row = detailsTable.insertRow();
                 row.innerHTML = `
-                    <td>${adherent.nom}</td>
-                    <td>${totalMisesAdherent} FCFA</td>
-                    <td>${totalPretsAdherent} FCFA</td>
-                    <td>${totalTontinesAdherent} FCFA</td>
-                    <td>${totalAdherent} FCFA</td>
-                `;
+                                    <td>${adherent.nom}</td>
+                                    <td>${totalMisesAdherent} FCFA</td>
+                                    <td>${totalPretsAdherent} FCFA</td>
+                                    <td>${totalTontinesAdherent} FCFA</td>
+                                    <td>${totalAdherent} FCFA</td>
+                                `;
             }
 
             document.getElementById('totalGeneralOperations').textContent = totalGeneralOperations + " FCFA";
             document.getElementById('totalMises').textContent = totalMises + " FCFA";
             document.getElementById('totalPrets').textContent = totalPrets + " FCFA";
             document.getElementById('totalTontines').textContent = totalTontines + " FCFA";
-            document.getElementById('totalGeneral').textContent = (totalMises + totalPrets + totalTontines) + " FCFA";
+            document.getElementById('totalCommissions').textContent = totalCommissions + " FCFA"; // Afficher le total des commissions dans la section détails globaux
+            document.getElementById('totalGeneral').textContent = (totalMises + totalPrets + totalTontines + totalFraisAdhesion) + " FCFA";
             document.getElementById('nombreAdherents').textContent = Object.keys(adherentsData).length;
+
         });
     });
 }
@@ -757,19 +911,47 @@ function chargerTendances() {
         const data = {
             mises: [],
             prets: [],
-            tontines: []
+            tontines: [],
+            fraisAdhesion: [], // Ajouter une clé pour les frais d'adhésion
+            interets: [], // Ajouter une clé pour les intérêts
+            penalites: [], // Ajouter une clé pour les pénalités
+            fraisDossier: [] // Ajouter une clé pour les frais de dossier
         };
 
         for (const operationKey in operations) {
             const operation = operations[operationKey];
             labels.push(operation.date); // Ajouter la date au tableau des labels
 
-            if (operation.type === 'mise') {
-                data.mises.push(operation.montant);
-            } else if (operation.type === 'pret') {
-                data.prets.push(operation.montant);
-            } else if (operation.type === 'tontine') {
-                data.tontines.push(operation.montant);
+            switch (operation.type) {
+                case 'mise':
+                    data.mises.push(operation.montant);
+                    break;
+                case 'pret':
+                    // Gérer les différents types de prêt
+                    switch (operation.typePret) {
+                        case 'Pret':
+                            data.prets.push(operation.montant);
+                            break;
+                        case 'Remboursement':
+                            // Ne pas afficher les remboursements dans le graphique
+                            break;
+                        case 'Interet':
+                            data.interets.push(operation.montant);
+                            break;
+                        case 'Penalite':
+                            data.penalites.push(operation.montant);
+                            break;
+                        case 'FraisDossier':
+                            data.fraisDossier.push(operation.montant);
+                            break;
+                    }
+                    break;
+                case 'tontine':
+                    data.tontines.push(operation.montant);
+                    break;
+                case 'FraisAdhesion':
+                    data.fraisAdhesion.push(operation.montant); // Ajouter les frais d'adhésion aux données du graphique
+                    break;
             }
         }
 
@@ -796,6 +978,30 @@ function chargerTendances() {
                         label: 'Tontines',
                         data: data.tontines,
                         borderColor: 'green',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Frais d\'Adhésion',
+                        data: data.fraisAdhesion,
+                        borderColor: 'purple',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Intérêts',
+                        data: data.interets,
+                        borderColor: 'orange',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pénalités',
+                        data: data.penalites,
+                        borderColor: 'brown',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Frais de dossier',
+                        data: data.fraisDossier,
+                        borderColor: 'grey',
                         borderWidth: 1
                     }
                 ]
@@ -851,93 +1057,93 @@ function getCurrentYear() {
     return date.getFullYear();
 }
 
-// Fonction pour filtrer les opérations par semaine, mois ou année
-function filterOperations(operations, period, value) {
-    return operations.filter(operation => {
-        const date = new Date(operation.date);
-        if (period === 'week') {
-            const currentWeek = getCurrentWeek();
-            const operationWeek = getWeekNumber(date);
-            return currentWeek === operationWeek;
-        } else if (period === 'month') {
-            return date.getMonth() === value;
-        } else if (period === 'year') {
-            return date.getFullYear() === value;
-        }
-        return false;
-    });
+// Fonction pour obtenir le numéro de semaine ISO d'une date
+function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    // Définir le jour de la semaine à jeudi dans le fuseau horaire UTC
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    // Obtenir le premier jour de l'année
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    // Calculer le numéro de semaine
+    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+    return weekNo;
 }
 
-// Fonction pour obtenir le numéro de semaine ISO d'une date
-function getWeekNumber(date) {
-    const onejan = new Date(date.getFullYear(), 0, 1);
-    return Math.ceil((((date - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+// Fonction pour filtrer les opérations par semaine, mois ou année
+function filterOperations(operations, period, value) {
+  return operations.filter(operation => {
+    const date = new Date(operation.date);
+    if (period === 'week') {
+      return getWeekNumber(date) === value;
+    } else if (period === 'month') {
+      return date.getMonth() === value;
+    } else if (period === 'year') {
+      return date.getFullYear() === value;
+    }
+    return false;
+  });
 }
 
 // Fonction pour calculer les totaux par type d'opération
 function calculateTotals(operations) {
-    let totalMises = 0;
-    let totalPrets = 0;
-    let totalTontines = 0;
+  let totalMises = 0;
+  let totalPrets = 0;
+  let totalTontines = 0;
+  let totalFraisAdhesion = 0;
 
-    operations.forEach(operation => {
-        if (operation.type === 'mise') {
-            totalMises += operation.montant;
-        } else if (operation.type === 'pret') {
-            totalPrets += operation.montant;
-        } else if (operation.type === 'tontine') {
-            totalTontines += operation.montant;
-        }
-    });
+  operations.forEach(operation => {
+    switch (operation.type) {
+      case 'mise':
+        totalMises += operation.montant;
+        break;
+      case 'pret':
+        totalPrets += operation.montant;
+        break;
+      case 'tontine':
+        totalTontines += operation.montant;
+        break;
+      case 'FraisAdhesion':
+        totalFraisAdhesion += operation.montant;
+        break;
+    }
+  });
 
-    return { totalMises, totalPrets, totalTontines };
+  return { totalMises, totalPrets, totalTontines, totalFraisAdhesion };
 }
 
 // Fonction pour afficher les analyses
 function afficherAnalyses() {
-    const operationsRef = database.ref('operations');
+  const operationsRef = database.ref('operations');
 
-    operationsRef.on('value', (snapshot) => {
-        const operations = snapshot.val() || [];
+  operationsRef.on('value', (snapshot) => {
+    const operations = snapshot.val() || [];
 
-        // Analyse hebdomadaire
-        const operationsHebdomadaire = filterOperations(operations, 'week', getCurrentWeek());
-        const totauxHebdomadaire = calculateTotals(operationsHebdomadaire);
-        document.getElementById('totalMisesHebdomadaire').textContent = totauxHebdomadaire.totalMises + " FCFA";
-        document.getElementById('totalPretsHebdomadaire').textContent = totauxHebdomadaire.totalPrets + " FCFA";
-        document.getElementById('totalTontinesHebdomadaire').textContent = totauxHebdomadaire.totalTontines + " FCFA";
-        document.getElementById('totalGeneralHebdomadaire').textContent = (totauxHebdomadaire.totalMises + totauxHebdomadaire.totalPrets + totauxHebdomadaire.totalTontines) + " FCFA";
-        document.getElementById('totalMisesHebdomadaire2').textContent = totauxHebdomadaire.totalMises + " FCFA";
-        document.getElementById('totalPretsHebdomadaire2').textContent = totauxHebdomadaire.totalPrets + " FCFA";
-        document.getElementById('totalTontinesHebdomadaire2').textContent = totauxHebdomadaire.totalTontines + " FCFA";
-        document.getElementById('totalGeneralHebdomadaire2').textContent = (totauxHebdomadaire.totalMises + totauxHebdomadaire.totalPrets + totauxHebdomadaire.totalTontines) + " FCFA";
+    // Analyse hebdomadaire
+    const operationsHebdomadaire = filterOperations(operations, 'week', getCurrentWeek());
+    const totauxHebdomadaire = calculateTotals(operationsHebdomadaire);
+    document.getElementById('totalMisesHebdomadaire').textContent = totauxHebdomadaire.totalMises + " FCFA";
+    document.getElementById('totalPretsHebdomadaire').textContent = totauxHebdomadaire.totalPrets + " FCFA";
+    document.getElementById('totalTontinesHebdomadaire').textContent = totauxHebdomadaire.totalTontines + " FCFA";
+    document.getElementById('totalGeneralHebdomadaire').textContent = (totauxHebdomadaire.totalMises + totauxHebdomadaire.totalPrets + totauxHebdomadaire.totalTontines) + " FCFA";
 
+    // Analyse mensuelle
+    const operationsMensuelle = filterOperations(operations, 'month', getCurrentMonth());
+    const totauxMensuelle = calculateTotals(operationsMensuelle);
+    document.getElementById('totalMisesMensuelle').textContent = totauxMensuelle.totalMises + " FCFA";
+    document.getElementById('totalPretsMensuelle').textContent = totauxMensuelle.totalPrets + " FCFA";
+    document.getElementById('totalTontinesMensuelle').textContent = totauxMensuelle.totalTontines + " FCFA";
+    document.getElementById('totalGeneralMensuelle').textContent = (totauxMensuelle.totalMises + totauxMensuelle.totalPrets + totauxMensuelle.totalTontines) + " FCFA";
 
-        // Analyse mensuelle
-        const operationsMensuelle = filterOperations(operations, 'month', getCurrentMonth());
-        const totauxMensuelle = calculateTotals(operationsMensuelle);
-        document.getElementById('totalMisesMensuelle').textContent = totauxMensuelle.totalMises + " FCFA";
-        document.getElementById('totalPretsMensuelle').textContent = totauxMensuelle.totalPrets + " FCFA";
-        document.getElementById('totalTontinesMensuelle').textContent = totauxMensuelle.totalTontines + " FCFA";
-        document.getElementById('totalGeneralMensuelle').textContent = (totauxMensuelle.totalMises + totauxMensuelle.totalPrets + totauxMensuelle.totalTontines) + " FCFA";
-        document.getElementById('totalMisesMensuelle2').textContent = totauxMensuelle.totalMises + " FCFA";
-        document.getElementById('totalPretsMensuelle2').textContent = totauxMensuelle.totalPrets + " FCFA";
-        document.getElementById('totalTontinesMensuelle2').textContent = totauxMensuelle.totalTontines + " FCFA";
-        document.getElementById('totalGeneralMensuelle2').textContent = (totauxMensuelle.totalMises + totauxMensuelle.totalPrets + totauxMensuelle.totalTontines) + " FCFA";
-
-        // Analyse annuelle
-        const operationsAnnuelle = filterOperations(operations, 'year', getCurrentYear());
-        const totauxAnnuelle = calculateTotals(operationsAnnuelle);
-        document.getElementById('totalMisesAnnuelle').textContent = totauxAnnuelle.totalMises + " FCFA";
-        document.getElementById('totalPretsAnnuelle').textContent = totauxAnnuelle.totalPrets + " FCFA";
-        document.getElementById('totalTontinesAnnuelle').textContent = totauxAnnuelle.totalTontines + " FCFA";
-        document.getElementById('totalGeneralAnnuelle').textContent = (totauxAnnuelle.totalMises + totauxAnnuelle.totalPrets + totauxAnnuelle.totalTontines) + " FCFA";
-        document.getElementById('totalMisesAnnuelle2').textContent = totauxAnnuelle.totalMises + " FCFA";
-        document.getElementById('totalPretsAnnuelle2').textContent = totauxAnnuelle.totalPrets + " FCFA";
-        document.getElementById('totalTontinesAnnuelle2').textContent = totauxAnnuelle.totalTontines + " FCFA";
-        document.getElementById('totalGeneralAnnuelle2').textContent = (totauxAnnuelle.totalMises + totauxAnnuelle.totalPrets + totauxAnnuelle.totalTontines) + " FCFA";
-    });
+    // Analyse annuelle
+    const operationsAnnuelle = filterOperations(operations, 'year', getCurrentYear());
+    const totauxAnnuelle = calculateTotals(operationsAnnuelle);
+    document.getElementById('totalMisesAnnuelle').textContent = totauxAnnuelle.totalMises + " FCFA";
+    document.getElementById('totalPretsAnnuelle').textContent = totauxAnnuelle.totalPrets + " FCFA";
+    document.getElementById('totalTontinesAnnuelle').textContent = totauxAnnuelle.totalTontines + " FCFA";
+    document.getElementById('totalGeneralAnnuelle').textContent = (totauxAnnuelle.totalMises + totauxAnnuelle.totalPrets + totauxAnnuelle.totalTontines) + " FCFA";
+  });
 }
+
 
 // Fonction pour récupérer les images de Firebase Storage et les afficher dans le carrousel
 function afficherImages() {
@@ -1001,7 +1207,9 @@ function afficherDetailsGlobaux() {
 function afficherDetailsAnalyses() {
     document.getElementById('detailsGlobaux').style.display = 'none';
     document.getElementById('detailsAnalyses').style.display = 'block';
+    afficherAnalyses(); // Appeler la fonction pour calculer et afficher les analyses
 }
-    </script>
+</script>
+
 </body>
 </html>
