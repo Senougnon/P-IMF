@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Analyse de Données Produit</title>
+  <title>Gestionnaire de Données RAZIA SARL</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -14,13 +14,18 @@ h1 {
   text-align: center;
 }
 
+h2 {
+  text-align: center;
+}
+
 form {
   display: grid;
   background-color: #8186f9;
+  border: 5px solid blue;
   grid-template-columns: repeat(2, 1fr); /* Deux colonnes pour les écrans plus grands */
   gap: 20px;
   padding: 10px;
-  border-radius: 10px
+  border-radius: 10px;
 }
 
 label {
@@ -69,27 +74,31 @@ button {
 }
 
 table {
-  width: 100%;
+  width: 95%; /* Réduit la largeur du tableau à 95% */
   border-collapse: collapse;
   margin-top: 20px;
+  margin-left: auto; /* Centre le tableau horizontalement */
+  margin-right: 20px;
 }
 
 th,
 td {
-  border: 1px solid #ddd;
+  border: 2px solid black;
   padding: 8px;
   text-align: left;
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #8186f9;
   text-align: center;
 }
 
 /* Cacher les sections par défaut */
 #detailsSection,
 #tendancesSection,
-#analysesSection {
+#analysesSection,
+#creanciersSection,
+#stocksSection {
   display: none;
 }
 
@@ -102,7 +111,7 @@ th {
 }
 
 /* Media Queries pour les smartphones */
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
   form {
     grid-template-columns: 1fr; /* Une seule colonne pour les smartphones */
     gap: 15px;
@@ -134,6 +143,7 @@ th {
 
   table {
     font-size: 14px; /* Réduire la taille de la police du tableau */
+    width: 100%; /* Ajustement de la largeur du tableau pour les smartphones */
   }
 
   th,
@@ -141,12 +151,37 @@ th {
     padding: 6px; /* Réduire le padding des cellules du tableau */
   }
 }
+
+/* Supprimer les flèches de spin pour les champs de type number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Style pour le numéro de téléphone en rouge si RAP > 0 */
+#produitTable td:nth-child(22) {
+  /* Sélectionne la 22ème colonne (Numéro de Téléphone) */
+  color: black;
+  /* Couleur de base en noir */
+}
+
+#produitTable tbody tr td:nth-child(22) {
+  /* Sélectionne la 22ème colonne dans le corps du tableau */
+  color: red;
+  /* Couleur rouge si RAP > 0 */
+}
+
+/* Style pour le numéro de téléphone en noir si RAP = 0 */
+#produitTable tbody tr td:nth-child(22):not([data-rap-status="red"]) {
+  color: black;
+}
   </style>
 </head>
 
 <body>
 
-  <h1>Analyse de Données Produit</h1>
+  <h1>Gestionnaire de Données RAZIA SARL</h1>
   <h2>Ajouter un nouveau produit</h2>
 
   <form id="productForm">
@@ -160,24 +195,41 @@ th {
       <input type="number" id="quantite" name="quantite" required oninput="calculerTauxCroissance()">
     </div>
     <div>
-      <label for="categorie">Catégorie:</label>
-      <input type="text" id="categorie" name="categorie">
+      <label for="designation">Désignation:</label>
+      <select id="designation" name="designation">
+        <!-- Les options seront ajoutées ici -->
+      </select>
     </div>
     <div>
-      <label for="designation">Désignation:</label>
-      <input type="text" id="designation" name="designation">
+      <label for="typeArticle">Type d'Article:</label>
+      <select id="typeArticle" name="typeArticle">
+        <option value="Ancien">Ancien</option>
+        <option value="Nouveau">Nouveau</option>
+      </select>
+    </div>
+    <div>
+      <label for="categorie">Catégorie:</label>
+      <input type="text" id="categorie" name="categorie">
     </div>
     <div>
       <label for="prixVente">Prix de vente:</label>
       <input type="number" id="prixVente" name="prixVente" oninput="calculerMargeBenefice()">
     </div>
     <div>
-      <label for="netBrut">Net Brut:</label>
-      <input type="number" id="netBrut" name="netBrut" oninput="calculerCoutReviens()">
+      <label for="RAP">RAP:</label>
+      <input type="number" id="RAP" name="RAP" oninput="changerCouleurTelephone()">
     </div>
     <div>
       <label for="prixBrut">Prix brut:</label>
-      <input type="number" id="prixBrut" name="prixBrut">
+      <input type="number" id="prixBrut" name="prixBrut" oninput="calculerPrixNet()">
+    </div>
+    <div>
+      <label for="taux">Taux:</label>
+      <input type="number" id="taux" name="taux" oninput="calculerPrixNet()">
+    </div>
+    <div>
+      <label for="netBrut">Prix Net :</label>
+      <input type="number" id="netBrut" name="netBrut" readonly>
     </div>
     <div>
       <label for="freight">Freight:</label>
@@ -211,12 +263,12 @@ th {
       <input type="text" id="ville" name="ville">
     </div>
     <div>
-      <label for="commande">Commande:</label>
-      <input type="number" id="commande" name="commande">
+      <label for="numeroTelephone">Numéro de Téléphone:</label>
+      <input type="text" id="numeroTelephone" name="numeroTelephone">
     </div>
     <div>
-      <label for="dureeEcoulement">Durée d'écoulement:</label>
-      <input type="text" id="dureeEcoulement" name="dureeEcoulement">
+      <label for="commande">Commande:</label>
+      <input type="number" id="commande" name="commande">
     </div>
     <div>
       <label for="coutReviens">Coût de Reviens du Produit:</label>
@@ -226,17 +278,15 @@ th {
       <label for="margeBenefice">Marge Bénéfice:</label>
       <input type="number" id="margeBenefice" name="margeBenefice" readonly>
     </div>
-    <div>
-      <label for="tauxCroissance">Taux de croissance (%):</label>
-      <input type="number" id="tauxCroissance" name="tauxCroissance" readonly>
-    </div>
   </form>
 
   <div class="button-container">
     <button id="ajouterBtn" onclick="ajouterProduit()">Ajouter</button><br>
-    <button onclick="afficherDetails()">Détails des Produits</button>
-    <button onclick="afficherTendances()">Tendances des Produits</button>
-    <button onclick="afficherAnalyses()">Analyses des Produits</button>
+    <button onclick="afficherDetails()">Détails des Données</button>
+    <button onclick="afficherAnalyses()">Analyses des Données</button>
+    <button onclick="afficherTendances()">Tendances des Données</button>
+    <button onclick="afficherCreanciers()">Débuteurs</button>
+    <button onclick="afficherStocks()">Gestion de Stocks</button>
   </div>
 
   <!-- Barre de chargement -->
@@ -244,41 +294,41 @@ th {
 
   <!-- Section des détails avec le tableau -->
   <div id="detailsSection">
-    <h2>Tableau des produits</h2>
+    <h2>Tableau des Données</h2>
     <table id="produitTable">
       <thead>
         <tr>
           <th colspan="1">Données de base</th>
-          <th colspan="4">Informations du produit</th>
-          <th colspan="2">Prix d'achat</th>
+          <th colspan="6">Informations du produit</th>
+          <th colspan="3">Prix d'achat</th>
           <th colspan="5">Autre Dépense</th>
-          <th rowspan="2">Total</th>
-          <th colspan="3">Marketing et Clients</th>
+          <th rowspan="2">Total des Dépenses</th>
           <th colspan="2">Informations Financières</th>
-          <th colspan="2">Indicateurs de croissance</th>
-          <th>Actions</th>
+          <th colspan="4">Marketing et Clients</th>
+          <th colspan="1"></th>
         </tr>
         <tr>
           <th>Date</th>
           <th>Quantité</th>
           <th>Désignation</th>
+          <th>Type d'Article</th>
           <th>Catégorie</th>
           <th>Prix de vente</th>
+          <th>RAP</th>
           <th>Prix Brut</th>
-          <th>Net Brut</th>
+          <th>Taux</th>
+          <th>Prix Net</th>
           <th>Freight</th>
           <th>Douane et Transport</th>
           <th>Frais de Transfert et Tenue de Compte</th>
           <th>Impôt et Document</th>
           <th>Réparation</th>
+          <th>Coût de Reviens du Produit</th>
+          <th>Marge Bénéfice</th>
           <th>Type de Client</th>
           <th>Ville</th>
           <th>Commande</th>
-          <th>Coût de Reviens du Produit</th>
-          <th>Marge Bénéfice</th>
-          <th>Taux de croissance</th>
-          <th>Durée d'écoulement</th>
-          <th></th>
+          <th>Numéro de Téléphone</th>
         </tr>
       </thead>
       <tbody>
@@ -309,11 +359,58 @@ th {
     </div>
   </div>
 
+  <!-- Section des créanciers -->
+  <div id="creanciersSection">
+    <h2>Liste des Débuteurs</h2>
+    <table id="creancierTable">
+      <thead>
+        <tr>
+          <th>Désignation</th>
+          <th>Numéro de Téléphone</th>
+          <th>Montant RAP</th>
+          <th>Satut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les lignes des créanciers seront ajoutées ici -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section de l'inventaire de stocks -->
+  <div id="stocksSection">
+    <h2>Inventaire de Stocks</h2>
+    <form id="stockForm">
+      <div>
+        <label for="designationStock">Désignation:</label>
+        <input type="text" id="designationStock" name="designationStock" required>
+      </div>
+      <div>
+        <label for="quantiteInitialeStock">Quantité Initiale:</label>
+        <input type="number" id="quantiteInitialeStock" name="quantiteInitialeStock" required>
+      </div>
+      <button onclick="ajouterStock()">Ajouter Stock</button>
+    </form>
+    <table id="stockTable">
+      <thead>
+        <tr>
+          <th>Désignation</th>
+          <th>Quantité Initiale</th>
+          <th>Quantité Restante</th>
+          <th>Quantité Vendues</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les lignes de stocks seront ajoutées ici -->
+      </tbody>
+    </table>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <script>
+  <script type="text/javascript">
     // Initialisez Firebase (remplacez les valeurs par vos propres identifiants)
     var firebaseConfig = {
       apiKey: "AIzaSyDTxa2nD-EVgmSRrHWciqs7xdOkp12t5yA",
@@ -328,7 +425,11 @@ th {
     firebase.initializeApp(firebaseConfig);
 
     var database = firebase.database();
+    var produitsRef = database.ref('produits'); // Référence à la collection 'produits'
+    var creanciersRef = database.ref('creanciers'); // Référence à la collection 'creanciers'
+    var stocksRef = database.ref('stocks'); // Référence à la collection 'stocks'
 
+    // Fonction pour ajouter un produit (modifiée pour ajouter le créancier)
     function ajouterProduit() {
       // Vérifier si tous les champs sont remplis
       var inputs = document.getElementById("productForm").querySelectorAll("input, select");
@@ -345,11 +446,14 @@ th {
       var productData = {
         date: document.getElementById("date").value,
         quantite: document.getElementById("quantite").value,
-        categorie: document.getElementById("categorie").value,
         designation: document.getElementById("designation").value,
+        typeArticle: document.getElementById("typeArticle").value,
+        categorie: document.getElementById("categorie").value,
         prixVente: document.getElementById("prixVente").value,
+        RAP: document.getElementById("RAP").value,
         netBrut: document.getElementById("netBrut").value,
         prixBrut: document.getElementById("prixBrut").value,
+        taux: document.getElementById("taux").value,
         freight: document.getElementById("freight").value,
         douaneTransport: document.getElementById("douaneTransport").value,
         fraisTransfert: document.getElementById("fraisTransfert").value,
@@ -357,26 +461,37 @@ th {
         reparation: document.getElementById("reparation").value,
         typeClient: document.getElementById("typeClient").value,
         ville: document.getElementById("ville").value,
+        numeroTelephone: document.getElementById("numeroTelephone").value,
         commande: document.getElementById("commande").value,
-        dureeEcoulement: document.getElementById("dureeEcoulement").value,
-        coutReviens: document.getElementById("coutReviens").value,
-        margeBenefice: document.getElementById("margeBenefice").value,
-        tauxCroissance: document.getElementById("tauxCroissance").value
+        coutReviens: parseFloat(document.getElementById("coutReviens").value) || 0, // Ajout du champ coutReviens
+        margeBenefice: parseFloat(document.getElementById("margeBenefice").value) || 0, // Ajout du champ margeBenefice
       };
 
       database.ref('produits').push(productData)
-        .then(function () {
+        .then(function() {
           // Animer la barre de chargement
           document.getElementById("loadingBar").style.width = "100%";
 
           // Attendre une courte durée pour que l'animation se termine
-          setTimeout(function () {
+          setTimeout(function() {
             alert("Produit ajouté avec succès !");
             document.getElementById("productForm").reset();
             document.getElementById("loadingBar").style.width = "0%"; // Réinitialiser la barre de chargement
+            mettreAJourStocks(productData.designation, productData.quantite);
+
+            // Vérifier si RAP > 0 pour ajouter un créancier
+            if (parseFloat(productData.RAP) > 0) {
+              // Ajouter le créancier à la liste des créanciers après l'ajout du produit
+              creanciersRef.push({
+                date: productData.date,
+                designation: productData.designation,
+                numeroTelephone: productData.numeroTelephone,
+                RAP: productData.RAP
+              });
+            }
           }, 500); // Attendre 500 millisecondes (0.5 seconde)
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error("Erreur lors de l'ajout du produit:", error);
           alert("Une erreur est survenue.");
           document.getElementById("loadingBar").style.width = "0%"; // Réinitialiser la barre de chargement en cas d'erreur
@@ -387,10 +502,14 @@ th {
       var detailsSection = document.getElementById("detailsSection");
       var tendancesSection = document.getElementById("tendancesSection");
       var analysesSection = document.getElementById("analysesSection");
+      var creanciersSection = document.getElementById("creanciersSection");
+      var stocksSection = document.getElementById("stocksSection");
 
       detailsSection.style.display = "block"; // Afficher les détails
       tendancesSection.style.display = "none"; // Cacher les tendances
       analysesSection.style.display = "none"; // Cacher les analyses
+      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
+      stocksSection.style.display = "none"; // Cacher la liste des stocks
       remplirTableau(); // Remplir le tableau avec les données
     }
 
@@ -398,9 +517,9 @@ th {
       var productTable = document.getElementById("produitTable").getElementsByTagName('tbody')[0];
       productTable.innerHTML = ''; // Effacer le contenu du tableau
 
-      database.ref('produits').once('value')
-        .then(function (snapshot) {
-          snapshot.forEach(function (childSnapshot) {
+      database.ref('produits').orderByChild('date').limitToLast(100).once('value') // Trier par date (les plus récents en haut)
+        .then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
             var product = childSnapshot.val();
             var row = productTable.insertRow();
 
@@ -416,6 +535,10 @@ th {
             var designationCell = row.insertCell();
             designationCell.textContent = product.designation;
 
+            // Type d'Article
+            var typeArticleCell = row.insertCell();
+            typeArticleCell.textContent = product.typeArticle;
+
             // Catégorie
             var categorieCell = row.insertCell();
             categorieCell.textContent = product.categorie;
@@ -424,11 +547,19 @@ th {
             var prixVenteCell = row.insertCell();
             prixVenteCell.textContent = product.prixVente;
 
+            // RAP
+            var RAPCell = row.insertCell();
+            RAPCell.textContent = product.RAP;
+
             // Prix Brut
             var prixBrutCell = row.insertCell();
             prixBrutCell.textContent = product.prixBrut;
 
-            // Net Brut
+            // Taux
+            var tauxCell = row.insertCell();
+            tauxCell.textContent = product.taux;
+
+            // Prix Net
             var netBrutCell = row.insertCell();
             netBrutCell.textContent = product.netBrut;
 
@@ -463,6 +594,14 @@ th {
             var totalCell = row.insertCell();
             totalCell.textContent = totalDepenses.toFixed(2); // Afficher le total avec 2 décimales
 
+            // Coût de Reviens du Produit
+            var coutReviensCell = row.insertCell();
+            coutReviensCell.textContent = product.coutReviens;
+
+            // Marge Bénéfice
+            var margeBeneficeCell = row.insertCell();
+            margeBeneficeCell.textContent = product.margeBenefice;
+
             // Type de Client
             var typeClientCell = row.insertCell();
             typeClientCell.textContent = product.typeClient;
@@ -475,28 +614,14 @@ th {
             var commandeCell = row.insertCell();
             commandeCell.textContent = product.commande;
 
-            // Coût de Reviens du Produit
-            var coutReviensCell = row.insertCell();
-            coutReviensCell.textContent = product.coutReviens;
-
-            // Marge Bénéfice
-            var margeBeneficeCell = row.insertCell();
-            margeBeneficeCell.textContent = product.margeBenefice;
-
-            // Taux de croissance
-            var tauxCroissanceCell = row.insertCell();
-            tauxCroissanceCell.textContent = product.tauxCroissance;
-
-            // Durée d'écoulement
-            var dureeEcoulementCell = row.insertCell();
-            dureeEcoulementCell.textContent = product.dureeEcoulement;
-
-            // Actions (cellule vide pour l'instant)
-            var actionsCell = row.insertCell();
-            // Vous pouvez ajouter des boutons ou des liens ici
+            // Numéro de Téléphone
+            var numeroTelephoneCell = row.insertCell();
+            numeroTelephoneCell.textContent = product.numeroTelephone;
+            // Ajout d'un attribut pour le statut RAP
+            numeroTelephoneCell.setAttribute('data-rap-status', product.RAP > 0 ? 'red' : 'black');
           });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error("Erreur lors de la récupération des détails des produits:", error);
           alert("Une erreur est survenue.");
         });
@@ -508,42 +633,54 @@ th {
       var detailsSection = document.getElementById("detailsSection");
       var tendancesSection = document.getElementById("tendancesSection");
       var analysesSection = document.getElementById("analysesSection");
+      var creanciersSection = document.getElementById("creanciersSection");
+      var stocksSection = document.getElementById("stocksSection");
 
       detailsSection.style.display = "none"; // Cacher les détails
       tendancesSection.style.display = "block"; // Afficher les tendances
       analysesSection.style.display = "none"; // Cacher les analyses
+      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
+      stocksSection.style.display = "none"; // Cacher la liste des stocks
       creerGraphique(); // Créer le graphique
     }
 
-    function creerGraphique() {
+        function creerGraphique() {
       // Récupérer les données de Firebase pour le graphique
-      database.ref('produits').once('value')
-        .then(function (snapshot) {
-          var labels = [];
-          var quantiteData = [];
-          var commandeData = [];
-          var coutReviensData = [];
-          var margeBeneficeData = [];
-          var tauxCroissanceData = [];
+      produitsRef.on('value', function(snapshot) {
+        var labels = [];
+        var quantiteData = [];
+        var commandeData = [];
+        var coutReviensData = [];
+        var margeBeneficeData = [];
+        var tauxCroissanceData = [];
 
-          snapshot.forEach(function (childSnapshot) {
-            var product = childSnapshot.val();
-            labels.push(product.date);
-            quantiteData.push(parseFloat(product.quantite) || 0);
-            commandeData.push(parseFloat(product.commande) || 0);
-            coutReviensData.push(parseFloat(product.coutReviens) || 0);
-            margeBeneficeData.push(parseFloat(product.margeBenefice) || 0);
-            tauxCroissanceData.push(parseFloat(product.tauxCroissance) || 0);
-          });
+        snapshot.forEach(function(childSnapshot) {
+          var product = childSnapshot.val();
+          labels.push(product.date);
+          quantiteData.push(parseFloat(product.quantite) || 0);
+          commandeData.push(parseFloat(product.commande) || 0);
+          coutReviensData.push(parseFloat(product.coutReviens) || 0);
+          margeBeneficeData.push(parseFloat(product.margeBenefice) || 0);
+          tauxCroissanceData.push(parseFloat(product.tauxCroissance) || 0);
+        });
 
-          // Créer le graphique avec Chart.js
+        // Mettre à jour le graphique existant avec les nouvelles données
+        if (tendanceChart) {
+          tendanceChart.data.labels = labels;
+          tendanceChart.data.datasets[0].data = quantiteData;
+          tendanceChart.data.datasets[1].data = commandeData;
+          tendanceChart.data.datasets[2].data = coutReviensData;
+          tendanceChart.data.datasets[3].data = margeBeneficeData;
+          tendanceChart.data.datasets[4].data = tauxCroissanceData;
+          tendanceChart.update();
+        } else {
+          // Créer le graphique si il n'existe pas encore
           var ctx = document.getElementById('tendanceChart').getContext('2d');
           tendanceChart = new Chart(ctx, {
             type: 'line',
             data: {
               labels: labels,
-              datasets: [
-                {
+              datasets: [{
                   label: 'Quantité',
                   data: quantiteData,
                   borderColor: 'rgba(54, 162, 235, 1)',
@@ -588,11 +725,8 @@ th {
               }
             }
           });
-        })
-        .catch(function (error) {
-          console.error("Erreur lors de la récupération des données pour le graphique:", error);
-          alert("Une erreur est survenue.");
-        });
+        }
+      });
     }
 
     function calculerTauxCroissance() {
@@ -605,9 +739,9 @@ th {
         .endAt(dateActuelle.getFullYear() + '-' + (dateActuelle.getMonth()) + '-01') // Exclure le mois actuel
         .limitToLast(1) // Récupérer le dernier enregistrement du mois précédent
         .once('value')
-        .then(function (snapshot) {
+        .then(function(snapshot) {
           var quantitePrecedente = 0;
-          snapshot.forEach(function (childSnapshot) {
+          snapshot.forEach(function(childSnapshot) {
             quantitePrecedente = parseFloat(childSnapshot.val().quantite) || 0;
           });
 
@@ -620,7 +754,7 @@ th {
           // Afficher le taux de croissance dans le champ
           document.getElementById("tauxCroissance").value = tauxCroissance.toFixed(2);
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error("Erreur lors du calcul du taux de croissance:", error);
         });
     }
@@ -651,10 +785,14 @@ th {
       var detailsSection = document.getElementById("detailsSection");
       var tendancesSection = document.getElementById("tendancesSection");
       var analysesSection = document.getElementById("analysesSection");
+      var creanciersSection = document.getElementById("creanciersSection");
+      var stocksSection = document.getElementById("stocksSection");
 
       detailsSection.style.display = "none"; // Cacher les détails
       tendancesSection.style.display = "none"; // Cacher les tendances
       analysesSection.style.display = "block"; // Afficher les analyses
+      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
+      stocksSection.style.display = "none"; // Cacher la liste des stocks
 
       // Appeler la fonction d'analyse avec la période par défaut (mensuelle)
       analyserProduits("mensuelle");
@@ -665,10 +803,10 @@ th {
       resultatsAnalyse.innerHTML = ''; // Effacer les résultats précédents
 
       database.ref('produits').once('value')
-        .then(function (snapshot) {
+        .then(function(snapshot) {
           var donneesAnalyse = {}; // Objet pour stocker les données d'analyse
 
-          snapshot.forEach(function (childSnapshot) {
+          snapshot.forEach(function(childSnapshot) {
             var product = childSnapshot.val();
             var date = new Date(product.date);
 
@@ -679,7 +817,10 @@ th {
               clePeriode = "Semaine " + getWeekNumber(date);
             } else if (periode === "mensuelle") {
               // Mois et année
-              clePeriode = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+              clePeriode = date.toLocaleString('default', {
+                month: 'long',
+                year: 'numeric'
+              });
             } else if (periode === "annuelle") {
               // Année
               clePeriode = date.getFullYear();
@@ -691,7 +832,8 @@ th {
                 quantite: 0,
                 commande: 0,
                 coutReviens: 0,
-                margeBenefice: 0
+                margeBenefice: 0,
+                totalVente: 0 // Nouveau champ pour le total des ventes
               };
             }
 
@@ -700,7 +842,23 @@ th {
             donneesAnalyse[clePeriode].commande += parseFloat(product.commande) || 0;
             donneesAnalyse[clePeriode].coutReviens += parseFloat(product.coutReviens) || 0;
             donneesAnalyse[clePeriode].margeBenefice += parseFloat(product.margeBenefice) || 0;
+            donneesAnalyse[clePeriode].totalVente += parseFloat(product.prixVente) || 0; // Mettre à jour le total des ventes
+
           });
+
+              // Calculer le taux de croissance pour chaque mois
+          var moisPrecedent = null;
+          for (var cle in donneesAnalyse) {
+            var donnees = donneesAnalyse[cle];
+            if (moisPrecedent) {
+              var tauxCroissance = 0;
+              if (donneesAnalyse[moisPrecedent].totalVente !== 0) {
+                tauxCroissance = ((donnees.totalVente - donneesAnalyse[moisPrecedent].totalVente) / donneesAnalyse[moisPrecedent].totalVente) * 100;
+              }
+              donnees.tauxCroissance = tauxCroissance.toFixed(2); // Ajouter le taux de croissance aux données du mois
+            }
+            moisPrecedent = cle; // Enregistrer le mois actuel pour le calcul du prochain mois
+          }
 
           // Afficher les résultats de l'analyse
           for (var cle in donneesAnalyse) {
@@ -711,10 +869,13 @@ th {
               '<p>Commande: ' + donnees.commande.toFixed(2) + '</p>' +
               '<p>Coût de Reviens: ' + donnees.coutReviens.toFixed(2) + '</p>' +
               '<p>Marge Bénéfice: ' + donnees.margeBenefice.toFixed(2) + '</p>';
+            if (donnees.tauxCroissance) { // Afficher le taux de croissance si disponible
+              resultatDiv.innerHTML += '<p>Taux de croissance: ' + donnees.tauxCroissance + '%</p>';
+            }
             resultatsAnalyse.appendChild(resultatDiv);
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error("Erreur lors de la récupération des données pour l'analyse:", error);
           alert("Une erreur est survenue.");
         });
@@ -733,9 +894,321 @@ th {
     }
 
     // Écouteur d'événement pour le changement de période d'analyse
-    document.getElementById("analysePeriode").addEventListener('change', function () {
+    document.getElementById("analysePeriode").addEventListener('change', function() {
       analyserProduits(this.value);
     });
+
+    // Fonction pour calculer le prix net
+    function calculerPrixNet() {
+      var prixBrut = parseFloat(document.getElementById("prixBrut").value) || 0;
+      var taux = parseFloat(document.getElementById("taux").value) || 0;
+      var prixNet = prixBrut * taux;
+      document.getElementById("netBrut").value = prixNet.toFixed(2);
+    }
+
+    // Fonction pour changer la couleur du numéro de téléphone
+    function changerCouleurTelephone() {
+      var RAP = parseFloat(document.getElementById("RAP").value) || 0;
+      var numeroTelephoneInput = document.getElementById("numeroTelephone");
+      if (RAP > 0) {
+        numeroTelephoneInput.style.color = 'red';
+      } else {
+        numeroTelephoneInput.style.color = 'black';
+      }
+    }
+
+    // Fonction pour afficher la liste des créanciers
+    function afficherCreanciers() {
+      var detailsSection = document.getElementById("detailsSection");
+      var tendancesSection = document.getElementById("tendancesSection");
+      var analysesSection = document.getElementById("analysesSection");
+      var creanciersSection = document.getElementById("creanciersSection");
+      var stocksSection = document.getElementById("stocksSection");
+
+      detailsSection.style.display = "none"; // Cacher les détails
+      tendancesSection.style.display = "none"; // Cacher les tendances
+      analysesSection.style.display = "none"; // Cacher les analyses
+      creanciersSection.style.display = "block"; // Afficher la liste des créanciers
+      stocksSection.style.display = "none"; // Cacher la liste des stocks
+      remplirTableauCreanciers(); // Remplir le tableau des créanciers
+    }
+
+    // Fonction pour remplir le tableau des créanciers
+    function remplirTableauCreanciers() {
+      var creancierTable = document.getElementById("creancierTable").getElementsByTagName('tbody')[0];
+      creancierTable.innerHTML = ''; // Effacer le contenu du tableau
+
+      creanciersRef.orderByChild('date').limitToLast(100).once('value') // Trier par date (les plus récents en haut)
+        .then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            var creancier = childSnapshot.val();
+            var row = creancierTable.insertRow();
+
+            // Désignation
+            var designationCell = row.insertCell();
+            designationCell.textContent = creancier.designation;
+
+            // Numéro de Téléphone
+            var numeroTelephoneCell = row.insertCell();
+            numeroTelephoneCell.textContent = creancier.numeroTelephone;
+
+            // Montant RAP
+            var RAPCell = row.insertCell();
+            RAPCell.textContent = creancier.RAP;
+
+            // Bouton Payé
+            var payéCell = row.insertCell();
+            var payéButton = document.createElement("button");
+            payéButton.textContent = "Payé";
+            payéButton.onclick = function() {
+              // Supprimer la ligne du tableau des créanciers
+              row.remove();
+
+              // Mettre à jour la couleur du numéro de téléphone dans le tableau des données
+              mettreAJourTelephone(creancier.numeroTelephone, 'black');
+
+              // Supprimer le créancier de Firebase
+              creanciersRef.child(childSnapshot.key).remove();
+
+              // Mettre à jour le montant RAP du produit dans Firebase
+              mettreAJourRAP(creancier.numeroTelephone, 0);
+            };
+            payéCell.appendChild(payéButton);
+          });
+        })
+        .catch(function(error) {
+          console.error("Erreur lors de la récupération des détails des créanciers:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    // Fonction pour mettre à jour la couleur du numéro de téléphone dans le tableau des données
+    function mettreAJourTelephone(numeroTelephone, couleur) {
+      var produitTable = document.getElementById("produitTable").getElementsByTagName('tbody')[0];
+      var rows = produitTable.querySelectorAll('tr');
+
+      rows.forEach(function(row) {
+        var numeroTelephoneCell = row.querySelector('td:nth-child(22)'); // Sélectionne la cellule du numéro de téléphone
+        if (numeroTelephoneCell.textContent === numeroTelephone) {
+          numeroTelephoneCell.style.color = couleur;
+          // Supprimer l'attribut data-rap-status pour réinitialiser la coloration
+          numeroTelephoneCell.removeAttribute('data-rap-status');
+        }
+      });
+    }
+
+    // Fonction pour mettre à jour le montant RAP du produit dans Firebase
+    function mettreAJourRAP(numeroTelephone, nouveauRAP) {
+      produitsRef.orderByChild('numeroTelephone').equalTo(numeroTelephone).once('value', function(produitSnapshot) {
+        if (produitSnapshot.exists()) {
+          produitSnapshot.forEach(function(childSnapshot) {
+            produitsRef.child(childSnapshot.key).update({
+              RAP: nouveauRAP
+            });
+          });
+        }
+      });
+    }
+
+    // Lorsque des données sont ajoutées à la collection 'produits'
+    produitsRef.on('child_added', function(snapshot) {
+      var product = snapshot.val();
+
+      // Vérifier si RAP > 0
+      if (parseFloat(product.RAP) > 0) {
+        // Ajouter le créancier à la liste des créanciers
+        ajouterCreancier(product); // Appeler la fonction pour ajouter le créancier
+      }
+    });
+
+    // Mettre à jour le tableau des créanciers si un produit est modifié
+    produitsRef.on('child_changed', function(snapshot) {
+      var product = snapshot.val();
+      mettreAJourCreancier(product);
+    });
+
+    // Fonction pour mettre à jour les créanciers en fonction des modifications de produits
+    function mettreAJourCreancier(product) {
+      // Vérifier si RAP > 0
+      if (parseFloat(product.RAP) > 0) {
+        // Vérifier si le créancier existe déjà dans la liste
+        creanciersRef.orderByChild('numeroTelephone').equalTo(product.numeroTelephone).once('value', function(creancierSnapshot) {
+          if (creancierSnapshot.exists()) {
+            // Mettre à jour le créancier existant
+            creancierSnapshot.forEach(function(childSnapshot) {
+              creanciersRef.child(childSnapshot.key).update({
+                date: product.date,
+                designation: product.designation,
+                RAP: product.RAP
+              });
+            });
+          } else {
+            // Ajouter le créancier à la liste des créanciers
+            creanciersRef.push({
+              date: product.date,
+              designation: product.designation,
+              numeroTelephone: product.numeroTelephone,
+              RAP: product.RAP
+            });
+          }
+
+          // Mettre à jour la couleur du numéro de téléphone dans le tableau des données
+          mettreAJourTelephone(product.numeroTelephone, 'red');
+        });
+      } else {
+        // Vérifier si le créancier existe déjà dans la liste
+        creanciersRef.orderByChild('numeroTelephone').equalTo(product.numeroTelephone).once('value', function(creancierSnapshot) {
+          if (creancierSnapshot.exists()) {
+            // Supprimer le créancier de la liste
+            creancierSnapshot.forEach(function(childSnapshot) {
+              creanciersRef.child(childSnapshot.key).remove();
+            });
+
+            // Mettre à jour la couleur du numéro de téléphone dans le tableau des données
+            mettreAJourTelephone(product.numeroTelephone, 'black');
+          }
+        });
+      }
+    }
+
+    // Fonction pour afficher la section "Gestion de Stocks"
+    function afficherStocks() {
+      var detailsSection = document.getElementById("detailsSection");
+      var tendancesSection = document.getElementById("tendancesSection");
+      var analysesSection = document.getElementById("analysesSection");
+      var creanciersSection = document.getElementById("creanciersSection");
+      var stocksSection = document.getElementById("stocksSection");
+
+      detailsSection.style.display = "none"; // Cacher les détails
+      tendancesSection.style.display = "none"; // Cacher les tendances
+      analysesSection.style.display = "none"; // Cacher les analyses
+      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
+      stocksSection.style.display = "block"; // Afficher la liste des stocks
+      remplirTableauStocks(); // Remplir le tableau des stocks
+    }
+
+    // Fonction pour remplir le tableau des stocks
+    function remplirTableauStocks() {
+      var stockTable = document.getElementById("stockTable").getElementsByTagName('tbody')[0];
+      stockTable.innerHTML = ''; // Effacer le contenu du tableau
+
+      stocksRef.once('value')
+        .then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            var stock = childSnapshot.val();
+            var row = stockTable.insertRow();
+
+            // Désignation
+            var designationCell = row.insertCell();
+            designationCell.textContent = stock.designation;
+
+            // Quantité Initiale
+            var quantiteInitialeCell = row.insertCell();
+            quantiteInitialeCell.textContent = stock.quantiteInitiale;
+
+            // Quantité Restante
+            var quantiteRestanteCell = row.insertCell();
+            quantiteRestanteCell.textContent = stock.quantiteRestante;
+
+            // Quantité Vendues
+            var quantiteVenduesCell = row.insertCell();
+            quantiteVenduesCell.textContent = stock.quantiteInitiale - stock.quantiteRestante; // Calculer la quantité vendues
+          });
+        })
+        .catch(function(error) {
+          console.error("Erreur lors de la récupération des données des stocks:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    // Fonction pour mettre à jour les stocks lors de l'ajout d'un produit
+    function mettreAJourStocks(designation, quantite) {
+      stocksRef.orderByChild('designation').equalTo(designation).once('value', function(stockSnapshot) {
+        if (stockSnapshot.exists()) {
+          stockSnapshot.forEach(function(childSnapshot) {
+            var stock = childSnapshot.val();
+            var key = childSnapshot.key;
+
+            // Calculer la quantité restante et la quantité vendues
+            var nouvelleQuantiteRestante = stock.quantiteRestante - quantite;
+            var nouvelleQuantiteVendues = stock.quantiteInitiale - nouvelleQuantiteRestante; // Calculer la quantité vendues
+
+            // Mettre à jour les données du stock
+            stocksRef.child(key).update({
+              quantiteRestante: nouvelleQuantiteRestante,
+              quantiteVendues: nouvelleQuantiteVendues // Mettre à jour la quantité vendues
+            });
+          });
+        } else {
+          // Créer un nouveau stock si le produit n'existe pas encore
+          stocksRef.push({
+            designation: designation,
+            quantiteInitiale: quantite, // La quantité initiale est la quantité ajoutée
+            quantiteRestante: quantite,
+            quantiteVendues: 0 // Initialiser la quantité vendues à 0
+          });
+        }
+      });
+    }
+
+    // Fonction pour ajouter un stock
+    function ajouterStock() {
+      var designation = document.getElementById("designationStock").value;
+      var quantiteInitiale = parseFloat(document.getElementById("quantiteInitialeStock").value) || 0;
+
+      // Vérifier si tous les champs sont remplis
+      if (designation === "" || isNaN(quantiteInitiale)) {
+        alert("Veuillez remplir tous les champs du formulaire de stock.");
+        return;
+      }
+
+      // Ajouter le stock à Firebase
+      stocksRef.push({
+        designation: designation,
+        quantiteInitiale: quantiteInitiale,
+        quantiteRestante: quantiteInitiale,
+        quantiteVendues: 0 // Initialiser la quantité vendues à 0
+      })
+      .then(function() {
+        // Réinitialiser le formulaire
+        document.getElementById("stockForm").reset();
+        // Mettre à jour le tableau des stocks
+        remplirTableauStocks();
+        alert("Stock ajouté avec succès !");
+      })
+      .catch(function(error) {
+        console.error("Erreur lors de l'ajout du stock:", error);
+        alert("Une erreur est survenue.");
+      });
+    }
+
+    // Fonction pour remplir le champ de sélection "Désignation"
+    function remplirChampDesignation() {
+      var designationSelect = document.getElementById("designation");
+      designationSelect.innerHTML = ''; // Effacer les options existantes
+
+      // Récupérer les désignations des stocks depuis Firebase
+      stocksRef.once('value')
+        .then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            var stock = childSnapshot.val();
+            var option = document.createElement("option");
+            option.value = stock.designation;
+            option.text = stock.designation;
+            designationSelect.add(option);
+          });
+        })
+        .catch(function(error) {
+          console.error("Erreur lors de la récupération des données des stocks:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    // Appeler la fonction pour remplir le champ de sélection au chargement de la page
+    window.onload = function() {
+      remplirTableauStocks();
+      remplirChampDesignation();
+    };
   </script>
 
 </body>
