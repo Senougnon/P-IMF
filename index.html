@@ -291,6 +291,7 @@ button[type="submit"] {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  align-items: center; /* Aligner verticalement les éléments */
 }
 
 #analyses .period-selection label {
@@ -301,6 +302,14 @@ button[type="submit"] {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-right: 10px; /* Espace entre le select et la période */
+}
+
+#analyses .period-selection span { /* Style pour le span de la période */
+  background-color: #38ac38; /* Couleur de fond */
+  padding: 5px 10px; /* Marge intérieure */
+  border-radius: 5px; /* Bord arrondi */
+  font-weight: bold; /* Texte en gras */
 }
 
 #analyses .analysis-table {
@@ -317,7 +326,7 @@ button[type="submit"] {
 }
 
 #analyses .analysis-table th {
-  background-color: #f2f2f2;
+  background-color: #38ac38;
 }
 
 /* Styles pour les données d'analyse en gras */
@@ -606,6 +615,7 @@ button[type="submit"] {
                 <select id="semaine">
                     <!-- Options des semaines seront générées dynamiquement -->
                 </select>
+                <span id="periodeSemaine"></span>  <!-- Span pour afficher la période de la semaine -->
             </div>
             <div class="period-selection" id="moisSelection" style="display: none;">
                 <label for="mois">Mois:</label>
@@ -1253,29 +1263,35 @@ function afficherImages() {
   const storageRef = firebase.storage().ref();
   const imagesRef = storageRef.child('Image Accueil'); // Remplacez 'images' par le chemin de votre dossier d'images dans Firebase Storage
 
-  imagesRef.listAll().then(res => {
-    let loadedImages = 0; // Compteur d'images chargées
+  // Vérifier si les images ont déjà été chargées
+  if (document.querySelectorAll('#imageCarousel img').length === 0) {
+    imagesRef.listAll().then(res => {
+      let loadedImages = 0; // Compteur d'images chargées
 
-    res.items.forEach(itemRef => {
-      itemRef.getDownloadURL().then(url => {
-        // Créer une image pour chaque URL
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = "Image from Firebase Storage"; // Ajouter un attribut alt
-        document.getElementById('imageCarousel').appendChild(img);
+      res.items.forEach(itemRef => {
+        itemRef.getDownloadURL().then(url => {
+          // Créer une image pour chaque URL
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = "Image from Firebase Storage"; // Ajouter un attribut alt
+          document.getElementById('imageCarousel').appendChild(img);
 
-        // Incrémenter le compteur d'images chargées
-        loadedImages++;
+          // Incrémenter le compteur d'images chargées
+          loadedImages++;
 
-        // Démarrer le carrousel une fois toutes les URLs récupérées
-        if (loadedImages === res.items.length) {
-          demarrerCarousel();
-        }
+          // Démarrer le carrousel une fois toutes les URLs récupérées
+          if (loadedImages === res.items.length) {
+            demarrerCarousel();
+          }
+        });
       });
+    }).catch(error => {
+      console.error("Erreur lors de la récupération des images:", error);
     });
-  }).catch(error => {
-    console.error("Erreur lors de la récupération des images:", error);
-  });
+  } else {
+    // Si les images ont déjà été chargées, démarrer le carrousel directement
+    demarrerCarousel();
+  }
 }
 
 // Fonction pour démarrer le carrousel d'images
@@ -1319,6 +1335,7 @@ function chargerAnalyses() {
   const anneeSelect = document.getElementById('annee');
   const semaineSelect = document.getElementById('semaine');
   const moisSelect = document.getElementById('mois');
+  const periodeSemaineSpan = document.getElementById('periodeSemaine'); // Récupérer la div pour la période de la semaine
 
   // Fonction pour calculer les totaux en fonction de la période
   function calculerTotaux(operationsData, periode, annee, semaine = null, mois = null) {
@@ -1543,6 +1560,7 @@ function chargerAnalyses() {
     const selectedAnnee = parseInt(anneeSelect.value);
     const selectedSemaine = parseInt(semaineSelect.value);
     const selectedMois = parseInt(moisSelect.value);
+    const periodeSemaineSpan = document.getElementById('periodeSemaine'); // Récupérer la div pour la période de la semaine
 
     operationsRef.once('value').then(snapshot => {
       const operationsData = snapshot.val() || [];
@@ -1560,6 +1578,19 @@ function chargerAnalyses() {
       document.getElementById('totalTontinesPeriode').textContent = totaux.totalTontines + " FCFA";
       document.getElementById('totalCommissionsPeriode').textContent = totaux.totalCommissions + " FCFA";
       document.getElementById('totalGeneralPeriode').textContent = (totaux.totalMises + totaux.totalPrets + totaux.totalTontines + totaux.totalFraisAdhesion) + " FCFA";
+
+      // Calculer la période de la semaine sélectionnée
+      const premiereJourneeSemaine = new Date(selectedAnnee, 0, 1);
+      premiereJourneeSemaine.setDate(premiereJourneeSemaine.getDate() + (selectedSemaine - 1) * 7); // Trouver le début de la semaine
+      const derniereJourneeSemaine = new Date(premiereJourneeSemaine);
+      derniereJourneeSemaine.setDate(derniereJourneeSemaine.getDate() + 6); // Trouver la fin de la semaine
+      
+      // Formater les dates pour l'affichage
+      const premiereJourneeFormatted = premiereJourneeSemaine.toLocaleDateString('fr-FR');
+      const derniereJourneeFormatted = derniereJourneeSemaine.toLocaleDateString('fr-FR');
+
+      // Afficher la période de la semaine dans le span
+      periodeSemaineSpan.textContent = `Semaine ${selectedSemaine} ; ${premiereJourneeFormatted} - ${derniereJourneeFormatted}`; 
     });
   });
 
