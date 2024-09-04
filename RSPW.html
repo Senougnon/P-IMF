@@ -5,177 +5,377 @@
   <title>Gestionnaire de Données RAZIA SARL</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     body {
-  font-family: sans-serif;
-}
+      font-family: sans-serif;
+    }
 
-h1 {
-  text-align: center;
-}
+    h1 {
+      text-align: center;
+    }
 
-h2 {
-  text-align: center;
-}
+    h2 {
+      text-align: center;
+    }
 
-form {
-  display: grid;
-  background-color: #8186f9;
-  border: 5px solid blue;
-  grid-template-columns: repeat(2, 1fr); /* Deux colonnes pour les écrans plus grands */
-  gap: 20px;
-  padding: 10px;
-  border-radius: 10px;
-}
+    form {
+      display: grid;
+      background-color: #8186f9;
+      border: 5px solid blue;
+      grid-template-columns: repeat(2, 1fr);
+      /* Deux colonnes pour les écrans plus grands */
+      gap: 20px;
+      padding: 10px;
+      border-radius: 10px;
+    }
 
-label {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-input[type="text"],
-input[type="number"],
-select,
-input[type="date"] {
-  width: 100%;
-  padding: 10px;
-  border: 3px solid black;
-  box-sizing: border-box;
-  border-radius: 7px;
-}
+    input[type="text"],
+    input[type="number"],
+    select,
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      border: 3px solid black;
+      box-sizing: border-box;
+      border-radius: 7px;
+    }
 
-button {
-  background-color: blue;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  border-radius: 10px;
-  font-size: 20px;
-}
+    button {
+      background-color: blue;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 10px;
+      font-size: 20px;
+    }
 
-/* Ajout de styles pour les boutons */
-.button-container {
-  margin-top: 20px;
-  /* Espacement au-dessus des boutons */
-}
+    /* Ajout de styles pour les boutons */
+    .button-container {
+      margin-top: 20px;
+      /* Espacement au-dessus des boutons */
+    }
 
-.button-container button {
-  margin-right: 30px;
-  /* Espacement entre les boutons */
-}
+    .button-container button {
+      margin-right: 30px;
+      /* Espacement entre les boutons */
+    }
 
-#ajouterBtn {
-  margin-bottom: 30px;
-  /* Espacement sous le bouton "Ajouter" */
-}
+    #ajouterBtn {
+      margin-bottom: 30px;
+      /* Espacement sous le bouton "Ajouter" */
+    }
 
-table {
-  width: 95%; /* Réduit la largeur du tableau à 95% */
-  border-collapse: collapse;
-  margin-top: 20px;
-  margin-left: auto; /* Centre le tableau horizontalement */
-  margin-right: 20px;
-}
+    table {
+      width: 95%;
+      /* Réduit la largeur du tableau à 95% */
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-left: auto;
+      /* Centre le tableau horizontalement */
+      margin-right: 20px;
+    }
 
-th,
-td {
-  border: 2px solid black;
-  padding: 8px;
-  text-align: left;
-}
+    th,
+    td {
+      border: 2px solid black;
+      padding: 8px;
+      text-align: left;
+    }
 
-th {
-  background-color: #8186f9;
-  text-align: center;
-}
+    th {
+      background-color: #8186f9;
+      text-align: center;
+    }
 
-/* Cacher les sections par défaut */
-#detailsSection,
-#tendancesSection,
-#analysesSection,
-#creanciersSection,
-#stocksSection {
-  display: none;
-}
+    /* Cacher les sections par défaut */
+    #detailsSection,
+    #tendancesSection,
+    #analysesSection,
+    #debiteursSection,
+    #stocksSection {
+      display: none;
+    }
 
-/* Style pour la barre de chargement */
-#loadingBar {
-  width: 0%;
-  height: 5px;
-  background-color: green;
-  transition: width 0.5s ease-in-out;
-}
+    /* Style pour la barre de chargement */
+    #loadingBar {
+      width: 0%;
+      height: 5px;
+      background-color: green;
+      transition: width 0.5s ease-in-out;
+    }
 
-/* Media Queries pour les smartphones */
-@media (max-width: 600px) {
-  form {
-    grid-template-columns: 1fr; /* Une seule colonne pour les smartphones */
-    gap: 15px;
-  }
+    /* Media Queries pour les smartphones */
+    @media (max-width: 600px) {
+      form {
+        grid-template-columns: 1fr;
+        /* Une seule colonne pour les smartphones */
+        gap: 15px;
+      }
 
-  input[type="text"],
-  input[type="number"],
-  select,
-  input[type="date"] {
-    padding: 18px; /* Augmentation significative du padding */
-    font-size: 16px;
-    height: 35px
-  }
+      input[type="text"],
+      input[type="number"],
+      select,
+      input[type="date"] {
+        padding: 18px;
+        /* Augmentation significative du padding */
+        font-size: 16px;
+        height: 35px
+      }
 
-  /* Assurer que le champ de type "date" est suffisamment grand */
-  input[type="date"] {
-    -webkit-appearance: none; /* Supprimer l'apparence par défaut */
-    -moz-appearance: none;
-    appearance: none;
-    height: 35px; /* Hauteur fixe pour le champ de date */
-  }
+      /* Assurer que le champ de type "date" est suffisamment grand */
+      input[type="date"] {
+        -webkit-appearance: none;
+        /* Supprimer l'apparence par défaut */
+        -moz-appearance: none;
+        appearance: none;
+        height: 35px;
+        /* Hauteur fixe pour le champ de date */
+      }
 
-  .button-container button {
-    padding: 12px 24px; /* Augmentation du padding des boutons */
-    font-size: 18px;
-    margin-bottom: 10px;
-    width: 100%;
-  }
+      .button-container button {
+        padding: 12px 24px;
+        /* Augmentation du padding des boutons */
+        font-size: 18px;
+        margin-bottom: 10px;
+        width: 100%;
+      }
 
-  table {
-    font-size: 14px; /* Réduire la taille de la police du tableau */
-    width: 100%; /* Ajustement de la largeur du tableau pour les smartphones */
-  }
+      table {
+        font-size: 14px;
+        /* Réduire la taille de la police du tableau */
+        width: 100%;
+        /* Ajustement de la largeur du tableau pour les smartphones */
+      }
 
-  th,
-  td {
-    padding: 6px; /* Réduire le padding des cellules du tableau */
-  }
-}
+      th,
+      td {
+        padding: 6px;
+        /* Réduire le padding des cellules du tableau */
+      }
+    }
 
-/* Supprimer les flèches de spin pour les champs de type number */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+    /* Supprimer les flèches de spin pour les champs de type number */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
-/* Style pour le numéro de téléphone en rouge si RAP > 0 */
-#produitTable td:nth-child(22) {
-  /* Sélectionne la 22ème colonne (Numéro de Téléphone) */
-  color: black;
-  /* Couleur de base en noir */
-}
+    /* Style pour le numéro de téléphone en rouge si RAP > 0 */
+    #produitTable td:nth-child(21) {
+      /* Sélectionne la 21ème colonne (Numéro de Téléphone) */
+      color: black;
+      /* Couleur de base en noir */
+    }
 
-#produitTable tbody tr td:nth-child(22) {
-  /* Sélectionne la 22ème colonne dans le corps du tableau */
-  color: red;
-  /* Couleur rouge si RAP > 0 */
-}
+    #produitTable tbody tr td:nth-child(21) {
+      /* Sélectionne la 21ème colonne dans le corps du tableau */
+      color: red;
+      /* Couleur rouge si RAP > 0 */
+    }
 
-/* Style pour le numéro de téléphone en noir si RAP = 0 */
-#produitTable tbody tr td:nth-child(22):not([data-rap-status="red"]) {
-  color: black;
-}
+    /* Style pour le numéro de téléphone en noir si RAP = 0 */
+    #produitTable tbody tr td:nth-child(21):not([data-rap-status="red"]) {
+      color: black;
+    }
+
+    /* Style pour les boutons de navigation */
+    .button-navigation {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 20px;
+      background-color: #28bc28;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .button-navigation button {
+      background-color: blue;
+      width: 100%;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    /* Style pour les lignes séparatrices des mois */
+    #produitTable tbody tr.separateur-mois {
+      /* Sélectionne les lignes avec la classe "separateur-mois" */
+      border-top: 5px solid green;
+      /* Ajoute une barre verte épaisse en haut de la ligne */
+    }
+
+    /* Styles pour les icônes de suppression et de modification */
+    .icon-container {
+      display: flex;
+      gap: 15px;
+      /* Augmentation de l'espace entre les icônes */
+    }
+
+    .icon {
+      cursor: pointer;
+      font-size: 1.5em;
+      /* Ajustez la taille de l'icône si nécessaire */
+    }
+
+    .icon-delete {
+      color: red;
+    }
+
+    .icon-edit {
+      color: blue;
+    }
+
+    /* Style pour la fenêtre flottante */
+    .modal {
+      display: none;
+      /* Caché par défaut */
+      position: fixed;
+      /* Reste en place */
+      z-index: 1;
+      /* S'affiche au-dessus des autres éléments */
+      left: 0;
+      top: 0;
+      width: 100%;
+      /* Pleine largeur */
+      height: 100%;
+      /* Pleine hauteur */
+      overflow: auto;
+      /* Active la barre de défilement si nécessaire */
+      background-color: rgba(0, 0, 0, 0.4);
+      /* Fond noir avec opacité */
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      /* Centre la fenêtre */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      /* Pourrait être plus petit, adaptez si besoin */
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Styles pour les icônes de filtrage et de tri */
+    .filter-icon,
+    .sort-icon {
+      cursor: pointer;
+      margin-left: 5px;
+    }
+
+    /* Style pour la barre de recherche */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input[type="text"] {
+      flex-grow: 1;
+      padding: 10px;
+      border: 2px solid black;
+      border-radius: 5px;
+    }
+
+    .search-bar button {
+      padding: 10px 15px;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    /* Styles pour la fenêtre flottante de filtrage (modifié) */
+    .filter-modal {
+      display: none;
+      position: fixed;
+      /* Positionnement fixe pour éviter les problèmes de zoom */
+      background-color: white;
+      border: 1px solid black;
+      padding: 10px;
+      z-index: 1;
+      min-width: 150px;
+    }
+
+    .filter-modal input[type="text"] {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 5px;
+      border: 1px solid black;
+    }
+
+    /* Styles pour le bouton de réinitialisation */
+    .reset-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #f0ad4e;
+      /* Orange */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Style pour les sélecteurs de période */
+    #anneeSelect,
+    #moisSelect,
+    #semaineSelect {
+      display: none;
+      /* Masquer par défaut */
+      margin-left: 10px;
+    }
+
+    /* Style pour l'affichage de la période sélectionnée */
+    #periodeSelectionnee {
+      background-color: #4cae4c;
+      /* Vert */
+      color: white;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    /* Styles pour l'icône de filtrage */
+    .filter-icon {
+      cursor: pointer;
+      margin-left: 5px;
+      /* Pour positionner le modal par rapport à l'icône */
+    }
+
+    /* Style pour la ligne total */
+    .total-row {
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -282,10 +482,14 @@ input[type="number"]::-webkit-outer-spin-button {
 
   <div class="button-container">
     <button id="ajouterBtn" onclick="ajouterProduit()">Ajouter</button><br>
+  </div>
+
+  <!-- Bloc des boutons de navigation -->
+  <div class="button-navigation">
     <button onclick="afficherDetails()">Détails des Données</button>
     <button onclick="afficherAnalyses()">Analyses des Données</button>
     <button onclick="afficherTendances()">Tendances des Données</button>
-    <button onclick="afficherCreanciers()">Débuteurs</button>
+    <button onclick="afficherDebiteurs()">Débuteurs</button>
     <button onclick="afficherStocks()">Gestion de Stocks</button>
   </div>
 
@@ -295,6 +499,13 @@ input[type="number"]::-webkit-outer-spin-button {
   <!-- Section des détails avec le tableau -->
   <div id="detailsSection">
     <h2>Tableau des Données</h2>
+
+    <!-- Barre de recherche pour le tableau des produits -->
+    <div class="search-bar">
+      <input type="text" id="searchInputProduits" placeholder="Rechercher dans le tableau des produits...">
+      <button onclick="rechercherProduits()">Rechercher</button>
+    </div>
+
     <table id="produitTable">
       <thead>
         <tr>
@@ -305,12 +516,20 @@ input[type="number"]::-webkit-outer-spin-button {
           <th rowspan="2">Total des Dépenses</th>
           <th colspan="2">Informations Financières</th>
           <th colspan="4">Marketing et Clients</th>
-          <th colspan="1"></th>
+          <th colspan="2">Actions</th>
         </tr>
         <tr>
-          <th>Date</th>
+          <th>Date
+            <i class="fas fa-filter filter-icon"
+              onclick="ouvrirModalFiltrage('produitTable', 'date', 'filterModalProduits')"></i>
+            <i class="fas fa-sort sort-icon" onclick="trierTableau('produitTable', 'date')"></i>
+          </th>
           <th>Quantité</th>
-          <th>Désignation</th>
+          <th>Désignation
+            <i class="fas fa-filter filter-icon"
+              onclick="ouvrirModalFiltrage('produitTable', 'designation', 'filterModalProduits')"></i>
+            <i class="fas fa-sort sort-icon" onclick="trierTableau('produitTable', 'designation')"></i>
+          </th>
           <th>Type d'Article</th>
           <th>Catégorie</th>
           <th>Prix de vente</th>
@@ -329,12 +548,127 @@ input[type="number"]::-webkit-outer-spin-button {
           <th>Ville</th>
           <th>Commande</th>
           <th>Numéro de Téléphone</th>
+          <th>Supprimer</th>
+          <th>Modifier</th>
         </tr>
       </thead>
       <tbody>
         <!-- Les lignes de produits seront ajoutées ici -->
       </tbody>
     </table>
+
+    <!-- Bouton de réinitialisation pour le tableau des produits -->
+    <button class="reset-button" onclick="remplirTableau()">Réinitialiser</button>
+
+    <!-- Fenêtre flottante (modal) pour la modification des produits -->
+    <div id="editProductModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fermerModalProduit()">×</span>
+        <h2>Modifier Produit</h2>
+        <form id="editProductForm">
+          <input type="hidden" id="editProductKey">
+          <!-- Champs du formulaire de modification du produit -->
+          <div>
+            <label for="editDate">Date:</label>
+            <input type="date" id="editDate" name="editDate" required>
+          </div>
+          <div>
+            <label for="editQuantite">Quantité:</label>
+            <input type="number" id="editQuantite" name="editQuantite" required oninput="calculerTauxCroissance()">
+          </div>
+          <div>
+            <label for="editDesignation">Désignation:</label>
+            <select id="editDesignation" name="editDesignation">
+              <!-- Les options seront ajoutées ici -->
+            </select>
+          </div>
+          <div>
+            <label for="editTypeArticle">Type d'Article:</label>
+            <select id="editTypeArticle" name="editTypeArticle">
+              <option value="Ancien">Ancien</option>
+              <option value="Nouveau">Nouveau</option>
+            </select>
+          </div>
+          <div>
+            <label for="editCategorie">Catégorie:</label>
+            <input type="text" id="editCategorie" name="editCategorie">
+          </div>
+          <div>
+            <label for="editPrixVente">Prix de vente:</label>
+            <input type="number" id="editPrixVente" name="editPrixVente" oninput="calculerMargeBenefice()">
+          </div>
+          <div>
+            <label for="editRAP">RAP:</label>
+            <input type="number" id="editRAP" name="editRAP" oninput="changerCouleurTelephone()">
+          </div>
+          <div>
+            <label for="editPrixBrut">Prix brut:</label>
+            <input type="number" id="editPrixBrut" name="editPrixBrut" oninput="calculerPrixNet()">
+          </div>
+          <div>
+            <label for="editTaux">Taux:</label>
+            <input type="number" id="editTaux" name="editTaux" oninput="calculerPrixNet()">
+          </div>
+          <div>
+            <label for="editNetBrut">Prix Net :</label>
+            <input type="number" id="editNetBrut" name="editNetBrut" readonly>
+          </div>
+          <div>
+            <label for="editFreight">Freight:</label>
+            <input type="number" id="editFreight" name="editFreight" oninput="calculerCoutReviens()">
+          </div>
+          <div>
+            <label for="editDouaneTransport">Douane et Transport:</label>
+            <input type="number" id="editDouaneTransport" name="editDouaneTransport" oninput="calculerCoutReviens()">
+          </div>
+          <div>
+            <label for="editFraisTransfert">Frais de transfert et Tenue de Compte:</label>
+            <input type="number" id="editFraisTransfert" name="editFraisTransfert" oninput="calculerCoutReviens()">
+          </div>
+          <div>
+            <label for="editImpotDocument">Impôt et Document:</label>
+            <input type="number" id="editImpotDocument" name="editImpotDocument" oninput="calculerCoutReviens()">
+          </div>
+          <div>
+            <label for="editReparation">Réparation:</label>
+            <input type="number" id="editReparation" name="editReparation" oninput="calculerCoutReviens()">
+          </div>
+          <div>
+            <label for="editTypeClient">Type de Client:</label>
+            <select id="editTypeClient" name="editTypeClient">
+              <option value="Ancien">Ancien</option>
+              <option value="Nouveau">Nouveau</option>
+            </select>
+          </div>
+          <div>
+            <label for="editVille">Ville:</label>
+            <input type="text" id="editVille" name="editVille">
+          </div>
+          <div>
+            <label for="editNumeroTelephone">Numéro de Téléphone:</label>
+            <input type="text" id="editNumeroTelephone" name="editNumeroTelephone">
+          </div>
+          <div>
+            <label for="editCommande">Commande:</label>
+            <input type="number" id="editCommande" name="editCommande">
+          </div>
+          <div>
+            <label for="editCoutReviens">Coût de Reviens du Produit:</label>
+            <input type="number" id="editCoutReviens" name="editCoutReviens" readonly>
+          </div>
+          <div>
+            <label for="editMargeBenefice">Marge Bénéfice:</label>
+            <input type="number" id="editMargeBenefice" name="editMargeBenefice" readonly>
+          </div>
+          <button type="submit">Enregistrer les modifications</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Fenêtre flottante (modal) pour le filtrage des produits -->
+    <div id="filterModalProduits" class="filter-modal">
+      <!-- Le contenu du modal sera ajouté dynamiquement par JavaScript -->
+    </div>
   </div>
 
   <!-- Section des tendances avec le graphique -->
@@ -353,64 +687,147 @@ input[type="number"]::-webkit-outer-spin-button {
         <option value="mensuelle">Mensuelle</option>
         <option value="annuelle">Annuelle</option>
       </select>
+      <select id="anneeSelect"></select>
+      <select id="moisSelect"></select>
+      <select id="semaineSelect"></select>
     </div>
+    <!-- Affichage de la période sélectionnée -->
+    <div id="periodeSelectionnee"></div>
     <div id="resultatsAnalyse">
       <!-- Les résultats de l'analyse seront affichés ici -->
     </div>
   </div>
 
-  <!-- Section des créanciers -->
-  <div id="creanciersSection">
+  <!-- Section des débiteurs -->
+  <div id="debiteursSection">
     <h2>Liste des Débuteurs</h2>
-    <table id="creancierTable">
+
+    <!-- Barre de recherche pour le tableau des debiteurs -->
+    <div class="search-bar">
+      <input type="text" id="searchInputDebiteurs" placeholder="Rechercher dans le tableau des débiteurs...">
+      <button onclick="rechercherDebiteurs()">Rechercher</button>
+    </div>
+
+    <table id="debiteurTable">
       <thead>
         <tr>
-          <th>Désignation</th>
+          <th>Date
+            <i class="fas fa-filter filter-icon"
+              onclick="ouvrirModalFiltrage('debiteurTable', 'date', 'filterModalDebiteurs')"></i>
+            <i class="fas fa-sort sort-icon" onclick="trierTableau('debiteurTable', 'date')"></i>
+          </th>
+          <th>Désignation
+            <i class="fas fa-filter filter-icon"
+              onclick="ouvrirModalFiltrage('debiteurTable', 'designation', 'filterModalDebiteurs')"></i>
+            <i class="fas fa-sort sort-icon" onclick="trierTableau('debiteurTable', 'designation')"></i>
+          </th>
           <th>Numéro de Téléphone</th>
           <th>Montant RAP</th>
-          <th>Satut</th>
+          <th>Statut</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Les lignes des créanciers seront ajoutées ici -->
+        <!-- Les lignes des débiteurs seront ajoutées ici -->
       </tbody>
     </table>
+
+    <!-- Bouton de réinitialisation pour le tableau des débiteurs -->
+    <button class="reset-button" onclick="remplirTableauDebiteurs()">Réinitialiser</button>
+
+    <!-- Fenêtre flottante (modal) pour le filtrage des débiteurs -->
+    <div id="filterModalDebiteurs" class="filter-modal">
+      <!-- Le contenu du modal sera ajouté dynamiquement par JavaScript -->
+    </div>
   </div>
 
   <!-- Section de l'inventaire de stocks -->
   <div id="stocksSection">
-    <h2>Inventaire de Stocks</h2>
+    <h2>Inventaires de Stocks</h2>
     <form id="stockForm">
+      <div>
+        <label for="dateStock">Date:</label>
+        <input type="date" id="dateStock" name="dateStock" required>
+      </div>
       <div>
         <label for="designationStock">Désignation:</label>
         <input type="text" id="designationStock" name="designationStock" required>
       </div>
       <div>
-        <label for="quantiteInitialeStock">Quantité Initiale:</label>
+        <label for="quantiteInitialeStock">Quantité à Stocker:</label>
         <input type="number" id="quantiteInitialeStock" name="quantiteInitialeStock" required>
       </div>
-      <button onclick="ajouterStock()">Ajouter Stock</button>
+      <button type="submit">Ajouter Stock</button> <br>
     </form>
+
+    <!-- Barre de recherche pour le tableau des stocks -->
+    <div class="search-bar">
+      <input type="text" id="searchInputStocks" placeholder="Rechercher dans le tableau des stocks...">
+      <button onclick="rechercherStocks()">Rechercher</button>
+    </div>
+
     <table id="stockTable">
       <thead>
         <tr>
-          <th>Désignation</th>
+          <th>Date
+            <i class="fas fa-filter filter-icon"
+              onclick="ouvrirModalFiltrage('stockTable', 'dateStock', 'filterModalStocks')"></i>
+            <i class="fas fa-sort sort-icon" onclick="trierTableau('stockTable', 'dateStock')"></i>
+          </th>
+          <th>Désignation
+            <i class="fas fa-filter filter-icon"
+              onclick="ouvrirModalFiltrage('stockTable', 'designation', 'filterModalStocks')"></i>
+            <i class="fas fa-sort sort-icon" onclick="trierTableau('stockTable', 'designation')"></i>
+          </th>
           <th>Quantité Initiale</th>
-          <th>Quantité Restante</th>
           <th>Quantité Vendues</th>
+          <th>Quantité Restante</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <!-- Les lignes de stocks seront ajoutées ici -->
       </tbody>
     </table>
+
+    <!-- Bouton de réinitialisation pour le tableau des stocks -->
+    <button class="reset-button" onclick="remplirTableauStocks()">Réinitialiser</button>
+
+    <!-- Fenêtre flottante (modal) pour la modification des stocks -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fermerModal()">×</span>
+        <h2>Modifier Stock</h2>
+        <form id="editForm">
+          <input type="hidden" id="editKey">
+          <div>
+            <label for="editDate">Date:</label>
+            <input type="date" id="editDate" required>
+          </div>
+          <div>
+            <label for="editDesignation">Désignation:</label>
+            <input type="text" id="editDesignation" required>
+          </div>
+          <div>
+            <label for="editQuantiteInitiale">Quantité Initiale:</label>
+            <input type="number" id="editQuantiteInitiale" required>
+          </div>
+          <button type="submit">Enregistrer les modifications</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Fenêtre flottante (modal) pour le filtrage des stocks -->
+    <div id="filterModalStocks" class="filter-modal">
+      <!-- Le contenu du modal sera ajouté dynamiquement par JavaScript -->
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-  <script type="text/javascript">
+  <script>
     // Initialisez Firebase (remplacez les valeurs par vos propres identifiants)
     var firebaseConfig = {
       apiKey: "AIzaSyDTxa2nD-EVgmSRrHWciqs7xdOkp12t5yA",
@@ -426,10 +843,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
     var database = firebase.database();
     var produitsRef = database.ref('produits'); // Référence à la collection 'produits'
-    var creanciersRef = database.ref('creanciers'); // Référence à la collection 'creanciers'
+    var debiteursRef = database.ref('debiteurs'); // Référence à la collection 'debiteurs'
     var stocksRef = database.ref('stocks'); // Référence à la collection 'stocks'
 
-    // Fonction pour ajouter un produit (modifiée pour ajouter le créancier)
+    // Fonction pour ajouter un produit (modifiée pour ajouter le debiteur)
     function ajouterProduit() {
       // Vérifier si tous les champs sont remplis
       var inputs = document.getElementById("productForm").querySelectorAll("input, select");
@@ -467,31 +884,35 @@ input[type="number"]::-webkit-outer-spin-button {
         margeBenefice: parseFloat(document.getElementById("margeBenefice").value) || 0, // Ajout du champ margeBenefice
       };
 
-      database.ref('produits').push(productData)
-        .then(function() {
+      produitsRef.push(productData)
+        .then(function () {
           // Animer la barre de chargement
           document.getElementById("loadingBar").style.width = "100%";
 
           // Attendre une courte durée pour que l'animation se termine
-          setTimeout(function() {
+          setTimeout(function () {
             alert("Produit ajouté avec succès !");
             document.getElementById("productForm").reset();
-            document.getElementById("loadingBar").style.width = "0%"; // Réinitialiser la barre de chargement
+            document.getElementById("loadingBar").style.width = "0%";
+            // Réinitialiser la barre de chargement
             mettreAJourStocks(productData.designation, productData.quantite);
 
-            // Vérifier si RAP > 0 pour ajouter un créancier
+            // Vérifier si RAP > 0 pour ajouter un debiteur
             if (parseFloat(productData.RAP) > 0) {
-              // Ajouter le créancier à la liste des créanciers après l'ajout du produit
-              creanciersRef.push({
+              // Ajouter le debiteur à la liste des debiteurs après l'ajout du produit
+              debiteursRef.push({
                 date: productData.date,
                 designation: productData.designation,
                 numeroTelephone: productData.numeroTelephone,
                 RAP: productData.RAP
               });
             }
+
+            // Actualiser l'analyse après l'ajout d'un produit
+            analyserProduits();
           }, 500); // Attendre 500 millisecondes (0.5 seconde)
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Erreur lors de l'ajout du produit:", error);
           alert("Une erreur est survenue.");
           document.getElementById("loadingBar").style.width = "0%"; // Réinitialiser la barre de chargement en cas d'erreur
@@ -499,28 +920,32 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     function afficherDetails() {
-      var detailsSection = document.getElementById("detailsSection");
-      var tendancesSection = document.getElementById("tendancesSection");
-      var analysesSection = document.getElementById("analysesSection");
-      var creanciersSection = document.getElementById("creanciersSection");
-      var stocksSection = document.getElementById("stocksSection");
-
-      detailsSection.style.display = "block"; // Afficher les détails
-      tendancesSection.style.display = "none"; // Cacher les tendances
-      analysesSection.style.display = "none"; // Cacher les analyses
-      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
-      stocksSection.style.display = "none"; // Cacher la liste des stocks
-      remplirTableau(); // Remplir le tableau avec les données
+      masquerToutesSections();
+      document.getElementById("detailsSection").style.display = "block";
+      remplirTableau();
     }
 
     function remplirTableau() {
       var productTable = document.getElementById("produitTable").getElementsByTagName('tbody')[0];
       productTable.innerHTML = ''; // Effacer le contenu du tableau
 
-      database.ref('produits').orderByChild('date').limitToLast(100).once('value') // Trier par date (les plus récents en haut)
-        .then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
+      var moisPrecedent = null; // Variable pour suivre le mois précédent
+
+      database.ref('produits').orderByChild('date').limitToLast(100).once('value')
+        .then(function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
             var product = childSnapshot.val();
+            var date = new Date(product.date);
+            var moisActuel = date.getMonth(); // 0 pour janvier, 1 pour février, etc.
+
+            // Ajouter une ligne de séparation si le mois a changé
+            if (moisPrecedent !== null && moisActuel !== moisPrecedent) {
+              var separatorRow = productTable.insertRow();
+              separatorRow.classList.add('separateur-mois'); // Ajouter la classe CSS pour le style
+              var emptyCell = separatorRow.insertCell();
+              emptyCell.setAttribute('colspan', 23); // Fusionner les cellules pour couvrir toute la ligne
+            }
+
             var row = productTable.insertRow();
 
             // Date
@@ -619,9 +1044,68 @@ input[type="number"]::-webkit-outer-spin-button {
             numeroTelephoneCell.textContent = product.numeroTelephone;
             // Ajout d'un attribut pour le statut RAP
             numeroTelephoneCell.setAttribute('data-rap-status', product.RAP > 0 ? 'red' : 'black');
+
+            // Ajouter les icônes de suppression et de modification
+            var actionsCell = row.insertCell();
+            var iconContainer = document.createElement("div");
+            iconContainer.classList.add("icon-container");
+
+            // Icône de suppression
+            var iconDelete = document.createElement("i");
+            iconDelete.classList.add("fas", "fa-trash", "icon-delete");
+            iconDelete.onclick = function () {
+              if (confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
+                // Supprimer le produit de Firebase
+                produitsRef.child(childSnapshot.key).remove()
+                  .then(function () {
+                    // Mettre à jour le tableau des produits
+                    remplirTableau();
+
+                    // Supprimer le debiteur associé si nécessaire
+                    if (parseFloat(product.RAP) > 0) {
+                      debiteursRef.orderByChild('numeroTelephone').equalTo(product.numeroTelephone).once('value', function (debiteurSnapshot) {
+                        if (debiteurSnapshot.exists()) {
+                          debiteurSnapshot.forEach(function (debiteurChildSnapshot) {
+                            debiteursRef.child(debiteurChildSnapshot.key).remove();
+                          });
+                        }
+                      });
+                    }
+
+                    // Mettre à jour le tableau des debiteurs
+                    remplirTableauDebiteurs();
+
+                    // Mettre à jour le tableau des stocks
+                    mettreAJourStocks(product.designation, -product.quantite); // Quantité négative pour soustraire
+                    remplirTableauStocks();
+
+                    // Actualiser l'analyse après la suppression d'un produit
+                    analyserProduits();
+
+                    alert("Produit supprimé avec succès !");
+                  })
+                  .catch(function (error) {
+                    console.error("Erreur lors de la suppression du produit:", error);
+                    alert("Une erreur est survenue.");
+                  });
+              }
+            };
+            iconContainer.appendChild(iconDelete);
+
+            // Icône de modification
+            var iconEdit = document.createElement("i");
+            iconEdit.classList.add("fas", "fa-edit", "icon-edit");
+            iconEdit.onclick = function () {
+              ouvrirModalProduit(childSnapshot.key, product);
+            };
+            iconContainer.appendChild(iconEdit);
+
+            actionsCell.appendChild(iconContainer);
+
+            moisPrecedent = moisActuel; // Mettre à jour le mois précédent
           });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Erreur lors de la récupération des détails des produits:", error);
           alert("Une erreur est survenue.");
         });
@@ -630,38 +1114,29 @@ input[type="number"]::-webkit-outer-spin-button {
     var tendanceChart = null; // Variable pour stocker l'objet du graphique
 
     function afficherTendances() {
-      var detailsSection = document.getElementById("detailsSection");
-      var tendancesSection = document.getElementById("tendancesSection");
-      var analysesSection = document.getElementById("analysesSection");
-      var creanciersSection = document.getElementById("creanciersSection");
-      var stocksSection = document.getElementById("stocksSection");
-
-      detailsSection.style.display = "none"; // Cacher les détails
-      tendancesSection.style.display = "block"; // Afficher les tendances
-      analysesSection.style.display = "none"; // Cacher les analyses
-      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
-      stocksSection.style.display = "none"; // Cacher la liste des stocks
+      masquerToutesSections();
+      document.getElementById("tendancesSection").style.display = "block";
       creerGraphique(); // Créer le graphique
     }
 
-        function creerGraphique() {
+    function creerGraphique() {
       // Récupérer les données de Firebase pour le graphique
-      produitsRef.on('value', function(snapshot) {
+      produitsRef.on('value', function (snapshot) {
         var labels = [];
         var quantiteData = [];
         var commandeData = [];
         var coutReviensData = [];
         var margeBeneficeData = [];
-        var tauxCroissanceData = [];
+        // var tauxCroissanceData = [];
 
-        snapshot.forEach(function(childSnapshot) {
+        snapshot.forEach(function (childSnapshot) {
           var product = childSnapshot.val();
           labels.push(product.date);
           quantiteData.push(parseFloat(product.quantite) || 0);
           commandeData.push(parseFloat(product.commande) || 0);
           coutReviensData.push(parseFloat(product.coutReviens) || 0);
           margeBeneficeData.push(parseFloat(product.margeBenefice) || 0);
-          tauxCroissanceData.push(parseFloat(product.tauxCroissance) || 0);
+          // tauxCroissanceData.push(parseFloat(product.tauxCroissance) || 0);
         });
 
         // Mettre à jour le graphique existant avec les nouvelles données
@@ -671,7 +1146,7 @@ input[type="number"]::-webkit-outer-spin-button {
           tendanceChart.data.datasets[1].data = commandeData;
           tendanceChart.data.datasets[2].data = coutReviensData;
           tendanceChart.data.datasets[3].data = margeBeneficeData;
-          tendanceChart.data.datasets[4].data = tauxCroissanceData;
+          // tendanceChart.data.datasets[4].data = tauxCroissanceData;
           tendanceChart.update();
         } else {
           // Créer le graphique si il n'existe pas encore
@@ -708,13 +1183,13 @@ input[type="number"]::-webkit-outer-spin-button {
                   backgroundColor: 'rgba(75, 192, 192, 0.2)',
                   borderWidth: 1
                 },
-                {
-                  label: 'Taux de croissance',
-                  data: tauxCroissanceData,
-                  borderColor: 'rgba(153, 102, 255, 1)',
-                  backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                  borderWidth: 1
-                }
+                // {
+                //   label: 'Taux de croissance',
+                //   data: tauxCroissanceData,
+                //   borderColor: 'rgba(153, 102, 255, 1)',
+                //   backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                //   borderWidth: 1
+                // }
               ]
             },
             options: {
@@ -739,9 +1214,9 @@ input[type="number"]::-webkit-outer-spin-button {
         .endAt(dateActuelle.getFullYear() + '-' + (dateActuelle.getMonth()) + '-01') // Exclure le mois actuel
         .limitToLast(1) // Récupérer le dernier enregistrement du mois précédent
         .once('value')
-        .then(function(snapshot) {
+        .then(function (snapshot) {
           var quantitePrecedente = 0;
-          snapshot.forEach(function(childSnapshot) {
+          snapshot.forEach(function (childSnapshot) {
             quantitePrecedente = parseFloat(childSnapshot.val().quantite) || 0;
           });
 
@@ -754,7 +1229,7 @@ input[type="number"]::-webkit-outer-spin-button {
           // Afficher le taux de croissance dans le champ
           document.getElementById("tauxCroissance").value = tauxCroissance.toFixed(2);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Erreur lors du calcul du taux de croissance:", error);
         });
     }
@@ -781,122 +1256,193 @@ input[type="number"]::-webkit-outer-spin-button {
       document.getElementById("margeBenefice").value = margeBenefice.toFixed(2);
     }
 
-    function afficherAnalyses() {
-      var detailsSection = document.getElementById("detailsSection");
-      var tendancesSection = document.getElementById("tendancesSection");
-      var analysesSection = document.getElementById("analysesSection");
-      var creanciersSection = document.getElementById("creanciersSection");
-      var stocksSection = document.getElementById("stocksSection");
-
-      detailsSection.style.display = "none"; // Cacher les détails
-      tendancesSection.style.display = "none"; // Cacher les tendances
-      analysesSection.style.display = "block"; // Afficher les analyses
-      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
-      stocksSection.style.display = "none"; // Cacher la liste des stocks
-
-      // Appeler la fonction d'analyse avec la période par défaut (mensuelle)
-      analyserProduits("mensuelle");
-    }
-
-    function analyserProduits(periode) {
+    // Fonction pour analyser les produits (modifiée pour la synchronisation)
+    function analyserProduits() {
       var resultatsAnalyse = document.getElementById("resultatsAnalyse");
       resultatsAnalyse.innerHTML = ''; // Effacer les résultats précédents
 
-      database.ref('produits').once('value')
-        .then(function(snapshot) {
-          var donneesAnalyse = {}; // Objet pour stocker les données d'analyse
+      // Obtenir les valeurs de sélection pour la période
+      var periode = document.getElementById("analysePeriode").value;
+      var selectedYear = document.getElementById("anneeSelect").value;
+      var selectedMonth = document.getElementById("moisSelect").value;
+      var selectedWeek = document.getElementById("semaineSelect").value;
 
-          snapshot.forEach(function(childSnapshot) {
+      // Définir la période à afficher (seulement pour l'analyse hebdomadaire)
+      var periodeAffichee = '';
+      if (periode === "hebdomadaire" && selectedWeek && selectedMonth && selectedYear) {
+        var startDate = getStartDateOfWeek(selectedWeek, selectedMonth, selectedYear);
+        var endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 6); // Fin de la semaine
+        periodeAffichee = 'Semaine ' + selectedWeek + ', ' + getMonthName(selectedMonth) + ' ' + selectedYear + ' (' + startDate.toLocaleDateString() + ' - ' + endDate.toLocaleDateString() + ')';
+      }
+
+      // Afficher la période sélectionnée (seulement pour l'analyse hebdomadaire)
+      document.getElementById("periodeSelectionnee").innerHTML = periodeAffichee ? 'Période sélectionnée: <span style="font-weight: bold;">' + periodeAffichee + '</span>' : '';
+
+      // Récupérer et analyser les données des produits
+      produitsRef.once('value')
+        .then(function (snapshot) {
+          var totalQuantite = 0;
+          var totalCommande = 0;
+          var totalCoutReviens = 0;
+          var totalMargeBenefice = 0;
+          var totalPrixVente = 0;
+          var totalPrixNet = 0;
+          var totalDepenses = 0;
+
+          snapshot.forEach(function (childSnapshot) {
             var product = childSnapshot.val();
-            var date = new Date(product.date);
+            var productDate = new Date(product.date);
 
-            // Déterminer la clé pour la période d'analyse
-            var clePeriode = "";
-            if (periode === "hebdomadaire") {
-              // Numéro de la semaine
-              clePeriode = "Semaine " + getWeekNumber(date);
-            } else if (periode === "mensuelle") {
-              // Mois et année
-              clePeriode = date.toLocaleString('default', {
-                month: 'long',
-                year: 'numeric'
-              });
-            } else if (periode === "annuelle") {
-              // Année
-              clePeriode = date.getFullYear();
+            // Vérifier si le produit correspond à la période sélectionnée
+            if (
+              (periode === "annuelle" && productDate.getFullYear() == selectedYear) ||
+              (periode === "mensuelle" && productDate.getFullYear() == selectedYear && productDate.getMonth() + 1 == selectedMonth) ||
+              (periode === "hebdomadaire" && productDate >= getStartDateOfWeek(selectedWeek, selectedMonth, selectedYear) && productDate <= new Date(getStartDateOfWeek(selectedWeek, selectedMonth, selectedYear)).setDate(new Date(getStartDateOfWeek(selectedWeek, selectedMonth, selectedYear)).getDate() + 6))
+            ) {
+              totalQuantite += parseFloat(product.quantite) || 0;
+              totalCommande += parseFloat(product.commande) || 0;
+              totalCoutReviens += parseFloat(product.coutReviens) || 0;
+              totalMargeBenefice += parseFloat(product.margeBenefice) || 0;
+              totalPrixVente += parseFloat(product.prixVente) || 0;
+              totalPrixNet += parseFloat(product.netBrut) || 0;
+              totalDepenses += (parseFloat(product.freight) || 0) + (parseFloat(product.douaneTransport) || 0) + (parseFloat(product.fraisTransfert) || 0) + (parseFloat(product.impotDocument) || 0) + (parseFloat(product.reparation) || 0);
             }
-
-            // Initialiser les données pour la période si nécessaire
-            if (!donneesAnalyse[clePeriode]) {
-              donneesAnalyse[clePeriode] = {
-                quantite: 0,
-                commande: 0,
-                coutReviens: 0,
-                margeBenefice: 0,
-                totalVente: 0 // Nouveau champ pour le total des ventes
-              };
-            }
-
-            // Ajouter les données du produit aux données de la période
-            donneesAnalyse[clePeriode].quantite += parseFloat(product.quantite) || 0;
-            donneesAnalyse[clePeriode].commande += parseFloat(product.commande) || 0;
-            donneesAnalyse[clePeriode].coutReviens += parseFloat(product.coutReviens) || 0;
-            donneesAnalyse[clePeriode].margeBenefice += parseFloat(product.margeBenefice) || 0;
-            donneesAnalyse[clePeriode].totalVente += parseFloat(product.prixVente) || 0; // Mettre à jour le total des ventes
-
           });
 
-              // Calculer le taux de croissance pour chaque mois
-          var moisPrecedent = null;
-          for (var cle in donneesAnalyse) {
-            var donnees = donneesAnalyse[cle];
-            if (moisPrecedent) {
-              var tauxCroissance = 0;
-              if (donneesAnalyse[moisPrecedent].totalVente !== 0) {
-                tauxCroissance = ((donnees.totalVente - donneesAnalyse[moisPrecedent].totalVente) / donneesAnalyse[moisPrecedent].totalVente) * 100;
-              }
-              donnees.tauxCroissance = tauxCroissance.toFixed(2); // Ajouter le taux de croissance aux données du mois
-            }
-            moisPrecedent = cle; // Enregistrer le mois actuel pour le calcul du prochain mois
-          }
-
-          // Afficher les résultats de l'analyse
-          for (var cle in donneesAnalyse) {
-            var donnees = donneesAnalyse[cle];
-            var resultatDiv = document.createElement('div');
-            resultatDiv.innerHTML = '<h3>' + cle + '</h3>' +
-              '<p>Quantité: ' + donnees.quantite.toFixed(2) + '</p>' +
-              '<p>Commande: ' + donnees.commande.toFixed(2) + '</p>' +
-              '<p>Coût de Reviens: ' + donnees.coutReviens.toFixed(2) + '</p>' +
-              '<p>Marge Bénéfice: ' + donnees.margeBenefice.toFixed(2) + '</p>';
-            if (donnees.tauxCroissance) { // Afficher le taux de croissance si disponible
-              resultatDiv.innerHTML += '<p>Taux de croissance: ' + donnees.tauxCroissance + '%</p>';
-            }
-            resultatsAnalyse.appendChild(resultatDiv);
-          }
+          // Afficher les totaux calculés
+          resultatsAnalyse.innerHTML += `
+                    <h3>Totaux pour la période sélectionnée</h3>
+                    <p>Quantité totale: ${totalQuantite.toFixed(2)}</p>
+                    <p>Total des commandes: ${totalCommande.toFixed(2)}</p>
+                    <p>Coût de revient total: ${totalCoutReviens.toFixed(2)}</p>
+                    <p>Marge bénéficiaire totale: ${totalMargeBenefice.toFixed(2)}</p>
+                    <p>Total des prix de vente: ${totalPrixVente.toFixed(2)}</p>
+                    <p>Total des prix nets: ${totalPrixNet.toFixed(2)}</p>
+                    <p>Total des dépenses: ${totalDepenses.toFixed(2)}</p>
+                  `;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Erreur lors de la récupération des données pour l'analyse:", error);
           alert("Une erreur est survenue.");
         });
     }
 
-    // Fonction pour obtenir le numéro de la semaine
-    function getWeekNumber(d) {
-      // Copier la date pour ne pas modifier l'original
-      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-      // Définir le jour de la semaine à jeudi dans la ligne de temps locale
-      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-      // Obtenir le premier jour de l'année
-      var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-      // Calculer le numéro de la semaine
-      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    // Fonction pour obtenir la date de début d'une semaine donnée
+    function getStartDateOfWeek(weekNumber, month, year) {
+      var date = new Date(year, month - 1, 1); // Mois en JavaScript est basé sur 0
+      var day = date.getDay(); // 0 pour dimanche, 1 pour lundi, etc.
+
+      // Ajuster la date pour commencer la semaine à lundi
+      var diff = date.getDate() - day + (day === 0 ? -6 : 1); // Ajuster pour les semaines commençant le dimanche
+      date.setDate(diff);
+
+      // Ajouter le nombre de jours pour atteindre la semaine souhaitée
+      date.setDate(date.getDate() + (weekNumber - 1) * 7);
+
+      return date;
     }
 
-    // Écouteur d'événement pour le changement de période d'analyse
-    document.getElementById("analysePeriode").addEventListener('change', function() {
-      analyserProduits(this.value);
+    // Fonction pour obtenir le nom du mois
+    function getMonthName(monthNumber) {
+      var mois = [
+        "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+        "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+      ];
+      return mois[monthNumber - 1];
+    }
+
+    function afficherAnalyses() {
+      masquerToutesSections();
+      document.getElementById("analysesSection").style.display = "block";
+      analyserProduits(); // Appeler la fonction d'analyse 
+    }
+
+    // Écouteur d'événement pour le changement de période d'analyse (modifié pour la synchronisation)
+    document.getElementById("analysePeriode").addEventListener('change', function () {
+      var periode = this.value;
+      var anneeSelect = document.getElementById("anneeSelect");
+      var moisSelect = document.getElementById("moisSelect");
+      var semaineSelect = document.getElementById("semaineSelect");
+
+      // Afficher/masquer les champs de sélection en fonction de la période sélectionnée
+      anneeSelect.style.display = periode === "annuelle" || periode === "mensuelle" || periode ===
+        "hebdomadaire" ? "inline-block" : "none";
+      moisSelect.style.display = periode === "mensuelle" || periode === "hebdomadaire" ? "inline-block" :
+        "none";
+      semaineSelect.style.display = periode === "hebdomadaire" ? "inline-block" : "none";
+
+      // Mettre à jour les options du champ de sélection des semaines en fonction du mois sélectionné
+      if (periode === "hebdomadaire") {
+        mettreAJourSemaines(moisSelect.value, anneeSelect.value);
+      }
+
+      // Analyser les produits en fonction de la période sélectionnée
+      analyserProduits();
     });
+
+
+    // Fonction pour mettre à jour les options du champ de sélection des semaines
+    function mettreAJourSemaines(month, year) {
+      var semaineSelect = document.getElementById("semaineSelect");
+      semaineSelect.innerHTML = ''; // Effacer les options existantes
+
+      // Calculer le nombre de semaines dans le mois
+      var numWeeks = getNumberOfWeeksInMonth(month, year);
+
+      // Ajouter les options de semaine
+      for (var i = 1; i <= numWeeks; i++) {
+        var option = document.createElement("option");
+        option.value = i;
+        option.text = 'Semaine ' + i;
+        semaineSelect.add(option);
+      }
+    }
+
+    // Fonction pour obtenir le nombre de semaines dans un mois donné
+    function getNumberOfWeeksInMonth(month, year) {
+      var firstDay = new Date(year, month - 1, 1); // Mois en JavaScript est basé sur 0
+      var lastDay = new Date(year, month, 0);
+      var numDays = lastDay.getDate();
+
+      // Ajuster le nombre de jours pour les semaines commençant le dimanche
+      if (firstDay.getDay() !== 1) {
+        numDays += firstDay.getDay() - 1;
+      }
+
+      return Math.ceil(numDays / 7);
+    }
+
+    // Remplir les options d'année (par exemple, 2020 à 2025)
+    var anneeSelect = document.getElementById("anneeSelect");
+    for (var i = new Date().getFullYear() - 5; i <= new Date().getFullYear() + 5; i++) {
+      var option = document.createElement("option");
+      option.value = i;
+      option.text = i;
+      anneeSelect.add(option);
+    }
+
+    // Remplir les options de mois
+    var moisSelect = document.getElementById("moisSelect");
+    var mois = [
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+      "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    ];
+    for (var i = 0; i < mois.length; i++) {
+      var option = document.createElement("option");
+      option.value = i + 1; // Mois en JavaScript est basé sur 0
+      option.text = mois[i];
+      moisSelect.add(option);
+    }
+
+    // Écouteur d'événement pour le changement de mois
+    moisSelect.addEventListener('change', function () {
+      mettreAJourSemaines(this.value, anneeSelect.value);
+      analyserProduits(); // Analyser les produits pour la semaine sélectionnée
+    });
+    // Écouteurs d'événements pour la sélection de l'année, du mois et de la semaine
+    document.getElementById("anneeSelect").addEventListener('change', analyserProduits);
+    document.getElementById("semaineSelect").addEventListener('change', analyserProduits);
 
     // Fonction pour calculer le prix net
     function calculerPrixNet() {
@@ -917,67 +1463,65 @@ input[type="number"]::-webkit-outer-spin-button {
       }
     }
 
-    // Fonction pour afficher la liste des créanciers
-    function afficherCreanciers() {
-      var detailsSection = document.getElementById("detailsSection");
-      var tendancesSection = document.getElementById("tendancesSection");
-      var analysesSection = document.getElementById("analysesSection");
-      var creanciersSection = document.getElementById("creanciersSection");
-      var stocksSection = document.getElementById("stocksSection");
-
-      detailsSection.style.display = "none"; // Cacher les détails
-      tendancesSection.style.display = "none"; // Cacher les tendances
-      analysesSection.style.display = "none"; // Cacher les analyses
-      creanciersSection.style.display = "block"; // Afficher la liste des créanciers
-      stocksSection.style.display = "none"; // Cacher la liste des stocks
-      remplirTableauCreanciers(); // Remplir le tableau des créanciers
+    // Fonction pour afficher la liste des debiteurs
+    function afficherDebiteurs() {
+      masquerToutesSections();
+      document.getElementById("debiteursSection").style.display = "block";
+      remplirTableauDebiteurs(); // Remplir le tableau des debiteurs
     }
 
-    // Fonction pour remplir le tableau des créanciers
-    function remplirTableauCreanciers() {
-      var creancierTable = document.getElementById("creancierTable").getElementsByTagName('tbody')[0];
-      creancierTable.innerHTML = ''; // Effacer le contenu du tableau
+    // Fonction pour remplir le tableau des debiteurs
+    function remplirTableauDebiteurs() {
+      var debiteurTable = document.getElementById("debiteurTable").getElementsByTagName('tbody')[0];
+      debiteurTable.innerHTML = ''; // Effacer le contenu du tableau
 
-      creanciersRef.orderByChild('date').limitToLast(100).once('value') // Trier par date (les plus récents en haut)
-        .then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
-            var creancier = childSnapshot.val();
-            var row = creancierTable.insertRow();
+      debiteursRef.orderByChild('date').limitToLast(100).once('value') // Trier par date (les plus récents en haut)
+        .then(function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
+            var debiteur = childSnapshot.val();
+            var row = debiteurTable.insertRow();
+
+            // Date 
+            var dateCell = row.insertCell();
+            dateCell.textContent = debiteur.date;
 
             // Désignation
             var designationCell = row.insertCell();
-            designationCell.textContent = creancier.designation;
+            designationCell.textContent = debiteur.designation;
 
             // Numéro de Téléphone
             var numeroTelephoneCell = row.insertCell();
-            numeroTelephoneCell.textContent = creancier.numeroTelephone;
+            numeroTelephoneCell.textContent = debiteur.numeroTelephone;
 
             // Montant RAP
             var RAPCell = row.insertCell();
-            RAPCell.textContent = creancier.RAP;
+            RAPCell.textContent = debiteur.RAP;
 
             // Bouton Payé
             var payéCell = row.insertCell();
             var payéButton = document.createElement("button");
             payéButton.textContent = "Payé";
-            payéButton.onclick = function() {
-              // Supprimer la ligne du tableau des créanciers
+            payéButton.onclick = function () {
+              // Supprimer la ligne du tableau des debiteurs
               row.remove();
 
               // Mettre à jour la couleur du numéro de téléphone dans le tableau des données
-              mettreAJourTelephone(creancier.numeroTelephone, 'black');
+              mettreAJourTelephone(debiteur.numeroTelephone, 'black');
 
-              // Supprimer le créancier de Firebase
-              creanciersRef.child(childSnapshot.key).remove();
+              // Supprimer le debiteur de Firebase
+              debiteursRef.child(childSnapshot.key).remove();
 
               // Mettre à jour le montant RAP du produit dans Firebase
-              mettreAJourRAP(creancier.numeroTelephone, 0);
+              mettreAJourRAP(debiteur.numeroTelephone, 0);
+
+              // Actualiser l'analyse après le paiement d'un débiteur
+              analyserProduits();
             };
             payéCell.appendChild(payéButton);
           });
         })
-        .catch(function(error) {
-          console.error("Erreur lors de la récupération des détails des créanciers:", error);
+        .catch(function (error) {
+          console.error("Erreur lors de la récupération des détails des debiteurs:", error);
           alert("Une erreur est survenue.");
         });
     }
@@ -987,8 +1531,8 @@ input[type="number"]::-webkit-outer-spin-button {
       var produitTable = document.getElementById("produitTable").getElementsByTagName('tbody')[0];
       var rows = produitTable.querySelectorAll('tr');
 
-      rows.forEach(function(row) {
-        var numeroTelephoneCell = row.querySelector('td:nth-child(22)'); // Sélectionne la cellule du numéro de téléphone
+      rows.forEach(function (row) {
+        var numeroTelephoneCell = row.querySelector('td:nth-child(21)'); // Sélectionne la cellule du numéro de téléphone
         if (numeroTelephoneCell.textContent === numeroTelephone) {
           numeroTelephoneCell.style.color = couleur;
           // Supprimer l'attribut data-rap-status pour réinitialiser la coloration
@@ -999,9 +1543,9 @@ input[type="number"]::-webkit-outer-spin-button {
 
     // Fonction pour mettre à jour le montant RAP du produit dans Firebase
     function mettreAJourRAP(numeroTelephone, nouveauRAP) {
-      produitsRef.orderByChild('numeroTelephone').equalTo(numeroTelephone).once('value', function(produitSnapshot) {
+      produitsRef.orderByChild('numeroTelephone').equalTo(numeroTelephone).once('value', function (produitSnapshot) {
         if (produitSnapshot.exists()) {
-          produitSnapshot.forEach(function(childSnapshot) {
+          produitSnapshot.forEach(function (childSnapshot) {
             produitsRef.child(childSnapshot.key).update({
               RAP: nouveauRAP
             });
@@ -1011,40 +1555,46 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     // Lorsque des données sont ajoutées à la collection 'produits'
-    produitsRef.on('child_added', function(snapshot) {
+    produitsRef.on('child_added', function (snapshot) {
       var product = snapshot.val();
 
       // Vérifier si RAP > 0
       if (parseFloat(product.RAP) > 0) {
-        // Ajouter le créancier à la liste des créanciers
-        ajouterCreancier(product); // Appeler la fonction pour ajouter le créancier
+        // Ajouter le debiteur à la liste des debiteurs
+        ajouterDebiteur(product); // Appeler la fonction pour ajouter le debiteur
       }
+
+      // Actualiser l'analyse après l'ajout d'un produit
+      analyserProduits();
     });
 
-    // Mettre à jour le tableau des créanciers si un produit est modifié
-    produitsRef.on('child_changed', function(snapshot) {
+    // Mettre à jour le tableau des debiteurs si un produit est modifié
+    produitsRef.on('child_changed', function (snapshot) {
       var product = snapshot.val();
-      mettreAJourCreancier(product);
+      mettreAJourDebiteur(product);
+
+      // Actualiser l'analyse après la modification d'un produit
+      analyserProduits();
     });
 
-    // Fonction pour mettre à jour les créanciers en fonction des modifications de produits
-    function mettreAJourCreancier(product) {
+    // Fonction pour mettre à jour les debiteurs en fonction des modifications de produits
+    function mettreAJourDebiteur(product) {
       // Vérifier si RAP > 0
       if (parseFloat(product.RAP) > 0) {
-        // Vérifier si le créancier existe déjà dans la liste
-        creanciersRef.orderByChild('numeroTelephone').equalTo(product.numeroTelephone).once('value', function(creancierSnapshot) {
-          if (creancierSnapshot.exists()) {
-            // Mettre à jour le créancier existant
-            creancierSnapshot.forEach(function(childSnapshot) {
-              creanciersRef.child(childSnapshot.key).update({
+        // Vérifier si le debiteur existe déjà dans la liste
+        debiteursRef.orderByChild('numeroTelephone').equalTo(product.numeroTelephone).once('value', function (debiteurSnapshot) {
+          if (debiteurSnapshot.exists()) {
+            // Mettre à jour le debiteur existant
+            debiteurSnapshot.forEach(function (childSnapshot) {
+              debiteursRef.child(childSnapshot.key).update({
                 date: product.date,
                 designation: product.designation,
                 RAP: product.RAP
               });
             });
           } else {
-            // Ajouter le créancier à la liste des créanciers
-            creanciersRef.push({
+            // Ajouter le debiteur à la liste des debiteurs
+            debiteursRef.push({
               date: product.date,
               designation: product.designation,
               numeroTelephone: product.numeroTelephone,
@@ -1056,12 +1606,12 @@ input[type="number"]::-webkit-outer-spin-button {
           mettreAJourTelephone(product.numeroTelephone, 'red');
         });
       } else {
-        // Vérifier si le créancier existe déjà dans la liste
-        creanciersRef.orderByChild('numeroTelephone').equalTo(product.numeroTelephone).once('value', function(creancierSnapshot) {
-          if (creancierSnapshot.exists()) {
-            // Supprimer le créancier de la liste
-            creancierSnapshot.forEach(function(childSnapshot) {
-              creanciersRef.child(childSnapshot.key).remove();
+        // Vérifier si le debiteur existe déjà dans la liste
+        debiteursRef.orderByChild('numeroTelephone').equalTo(product.numeroTelephone).once('value', function (debiteurSnapshot) {
+          if (debiteurSnapshot.exists()) {
+            // Supprimer le debiteur de la liste
+            debiteurSnapshot.forEach(function (childSnapshot) {
+              debiteursRef.child(childSnapshot.key).remove();
             });
 
             // Mettre à jour la couleur du numéro de téléphone dans le tableau des données
@@ -1073,30 +1623,30 @@ input[type="number"]::-webkit-outer-spin-button {
 
     // Fonction pour afficher la section "Gestion de Stocks"
     function afficherStocks() {
-      var detailsSection = document.getElementById("detailsSection");
-      var tendancesSection = document.getElementById("tendancesSection");
-      var analysesSection = document.getElementById("analysesSection");
-      var creanciersSection = document.getElementById("creanciersSection");
-      var stocksSection = document.getElementById("stocksSection");
-
-      detailsSection.style.display = "none"; // Cacher les détails
-      tendancesSection.style.display = "none"; // Cacher les tendances
-      analysesSection.style.display = "none"; // Cacher les analyses
-      creanciersSection.style.display = "none"; // Cacher la liste des créanciers
-      stocksSection.style.display = "block"; // Afficher la liste des stocks
+      masquerToutesSections();
+      document.getElementById("stocksSection").style.display = "block";
       remplirTableauStocks(); // Remplir le tableau des stocks
     }
 
-    // Fonction pour remplir le tableau des stocks
+    // Fonction pour remplir le tableau des stocks (modifiée pour ajouter la ligne total)
     function remplirTableauStocks() {
       var stockTable = document.getElementById("stockTable").getElementsByTagName('tbody')[0];
       stockTable.innerHTML = ''; // Effacer le contenu du tableau
 
+      var totalQuantiteInitiale = 0;
+      var totalQuantiteVendues = 0;
+      var totalQuantiteRestante = 0;
+
       stocksRef.once('value')
-        .then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
+        .then(function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
             var stock = childSnapshot.val();
             var row = stockTable.insertRow();
+            var key = childSnapshot.key; // Récupérer la clé du stock
+
+            // Date
+            var dateCell = row.insertCell();
+            dateCell.textContent = stock.dateStock; // Afficher la date du stock
 
             // Désignation
             var designationCell = row.insertCell();
@@ -1106,109 +1656,600 @@ input[type="number"]::-webkit-outer-spin-button {
             var quantiteInitialeCell = row.insertCell();
             quantiteInitialeCell.textContent = stock.quantiteInitiale;
 
+            // Quantité Vendues
+            var quantiteVenduesCell = row.insertCell();
+            quantiteVenduesCell.textContent = stock.quantiteVendues;
+
             // Quantité Restante
             var quantiteRestanteCell = row.insertCell();
             quantiteRestanteCell.textContent = stock.quantiteRestante;
 
-            // Quantité Vendues
-            var quantiteVenduesCell = row.insertCell();
-            quantiteVenduesCell.textContent = stock.quantiteInitiale - stock.quantiteRestante; // Calculer la quantité vendues
+            // Ajouter les icônes de suppression et de modification
+            var actionsCell = row.insertCell();
+            var iconContainer = document.createElement("div");
+            iconContainer.classList.add("icon-container");
+
+            // Icône de suppression
+            var iconDelete = document.createElement("i");
+            iconDelete.classList.add("fas", "fa-trash", "icon-delete");
+            iconDelete.onclick = function () {
+              if (confirm("Êtes-vous sûr de vouloir supprimer ce stock ?")) {
+                stocksRef.child(key).remove()
+                  .then(function () {
+                    // Mettre à jour le tableau des stocks et le champ de sélection "Désignation"
+                    remplirTableauStocks();
+                    remplirChampDesignation();
+
+                    // Actualiser l'analyse après la suppression d'un stock
+                    analyserProduits();
+
+                    alert("Stock supprimé avec succès !");
+                  })
+                  .catch(function (error) {
+                    console.error("Erreur lors de la suppression du stock:", error);
+                    alert("Une erreur est survenue.");
+                  });
+              }
+            };
+            iconContainer.appendChild(iconDelete);
+
+            // Icône de modification
+            var iconEdit = document.createElement("i");
+            iconEdit.classList.add("fas", "fa-edit", "icon-edit");
+            iconEdit.onclick = function () {
+              ouvrirModal(key, stock.dateStock, stock.designation, stock.quantiteInitiale); // Passer la date à ouvrirModal
+            };
+            iconContainer.appendChild(iconEdit);
+            actionsCell.appendChild(iconContainer);
+
+            // Calculer les totaux
+            totalQuantiteInitiale += parseFloat(stock.quantiteInitiale) || 0;
+            totalQuantiteVendues += parseFloat(stock.quantiteVendues) || 0;
+            totalQuantiteRestante += parseFloat(stock.quantiteRestante) || 0;
           });
+
+          // Ajouter la ligne total
+          var totalRow = stockTable.insertRow();
+          totalRow.classList.add('total-row'); // Ajouter une classe CSS pour le style
+
+          var totalDateCell = totalRow.insertCell();
+          totalDateCell.textContent = "Total";
+
+          var totalDesignationCell = totalRow.insertCell();
+          totalDesignationCell.textContent = "";
+
+          var totalQuantiteInitialeCell = totalRow.insertCell();
+          totalQuantiteInitialeCell.textContent = totalQuantiteInitiale.toFixed(2);
+
+          var totalQuantiteVenduesCell = totalRow.insertCell();
+          totalQuantiteVenduesCell.textContent = totalQuantiteVendues.toFixed(2);
+
+          var totalQuantiteRestanteCell = totalRow.insertCell();
+          totalQuantiteRestanteCell.textContent = totalQuantiteRestante.toFixed(2);
+
+          var totalActionsCell = totalRow.insertCell();
+          totalActionsCell.textContent = "";
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Erreur lors de la récupération des données des stocks:", error);
           alert("Une erreur est survenue.");
         });
     }
 
-    // Fonction pour mettre à jour les stocks lors de l'ajout d'un produit
-    function mettreAJourStocks(designation, quantite) {
-      stocksRef.orderByChild('designation').equalTo(designation).once('value', function(stockSnapshot) {
-        if (stockSnapshot.exists()) {
-          stockSnapshot.forEach(function(childSnapshot) {
-            var stock = childSnapshot.val();
-            var key = childSnapshot.key;
-
-            // Calculer la quantité restante et la quantité vendues
-            var nouvelleQuantiteRestante = stock.quantiteRestante - quantite;
-            var nouvelleQuantiteVendues = stock.quantiteInitiale - nouvelleQuantiteRestante; // Calculer la quantité vendues
-
-            // Mettre à jour les données du stock
-            stocksRef.child(key).update({
-              quantiteRestante: nouvelleQuantiteRestante,
-              quantiteVendues: nouvelleQuantiteVendues // Mettre à jour la quantité vendues
-            });
-          });
-        } else {
-          // Créer un nouveau stock si le produit n'existe pas encore
-          stocksRef.push({
-            designation: designation,
-            quantiteInitiale: quantite, // La quantité initiale est la quantité ajoutée
-            quantiteRestante: quantite,
-            quantiteVendues: 0 // Initialiser la quantité vendues à 0
-          });
-        }
-      });
+    // Fonction pour ouvrir la fenêtre flottante (modal)
+    function ouvrirModal(key, dateStock, designation, quantiteInitiale) {
+      document.getElementById("editKey").value = key;
+      document.getElementById("editDate").value = dateStock; // Initialiser le champ de date dans le modal
+      document.getElementById("editDesignation").value = designation;
+      document.getElementById("editQuantiteInitiale").value = quantiteInitiale;
+      document.getElementById("editModal").style.display = "block";
     }
 
-    // Fonction pour ajouter un stock
-    function ajouterStock() {
-      var designation = document.getElementById("designationStock").value;
-      var quantiteInitiale = parseFloat(document.getElementById("quantiteInitialeStock").value) || 0;
+    // Fonction pour fermer la fenêtre flottante (modal)
+    function fermerModal() {
+      document.getElementById("editModal").style.display = "none";
+      // Réinitialiser le formulaire d'édition
+      document.getElementById("editForm").reset();
+    }
+
+    // Fonction pour modifier un stock (modifiée pour utiliser la fenêtre flottante)
+    function modifierStock(key) {
+      var nouvelleDate = document.getElementById("editDate").value;
+      var nouvelleDesignation = document.getElementById("editDesignation").value;
+      var nouvelleQuantiteInitiale = parseFloat(document.getElementById("editQuantiteInitiale").value) || 0;
 
       // Vérifier si tous les champs sont remplis
-      if (designation === "" || isNaN(quantiteInitiale)) {
+      if (nouvelleDate === "" || nouvelleDesignation === "" || isNaN(nouvelleQuantiteInitiale)) {
         alert("Veuillez remplir tous les champs du formulaire de stock.");
         return;
       }
 
-      // Ajouter le stock à Firebase
-      stocksRef.push({
-        designation: designation,
-        quantiteInitiale: quantiteInitiale,
-        quantiteRestante: quantiteInitiale,
-        quantiteVendues: 0 // Initialiser la quantité vendues à 0
+      // Mettre à jour le stock dans Firebase
+      stocksRef.child(key).update({
+        dateStock: nouvelleDate, // Mettre à jour la date du stock
+        designation: nouvelleDesignation,
+        quantiteInitiale: nouvelleQuantiteInitiale,
+        quantiteRestante: nouvelleQuantiteInitiale,
+        quantiteVendues: 0
       })
-      .then(function() {
-        // Réinitialiser le formulaire
-        document.getElementById("stockForm").reset();
-        // Mettre à jour le tableau des stocks
-        remplirTableauStocks();
-        alert("Stock ajouté avec succès !");
-      })
-      .catch(function(error) {
-        console.error("Erreur lors de l'ajout du stock:", error);
-        alert("Une erreur est survenue.");
-      });
+        .then(function () {
+          // Fermer la fenêtre flottante
+          fermerModal();
+
+          // Mettre à jour le tableau des stocks et le champ de sélection "Désignation"
+          remplirTableauStocks();
+          remplirChampDesignation();
+
+          // Actualiser l'analyse après la modification d'un stock
+          analyserProduits();
+
+          alert("Stock modifié avec succès !");
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de la modification du stock:", error);
+          alert("Une erreur est survenue.");
+        });
     }
 
-    // Fonction pour remplir le champ de sélection "Désignation"
+    // Écouteur d'événement pour le formulaire de modification de stock
+    document.getElementById("editForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var key = document.getElementById("editKey").value;
+      modifierStock(key);
+    });
+
+    // Fonction pour remplir le champ de sélection "Désignation" (modifiée pour éviter les doublons)
     function remplirChampDesignation() {
       var designationSelect = document.getElementById("designation");
       designationSelect.innerHTML = ''; // Effacer les options existantes
 
+      // Utiliser un Set pour stocker les désignations uniques
+      var designationsUniques = new Set();
+
       // Récupérer les désignations des stocks depuis Firebase
       stocksRef.once('value')
-        .then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
+        .then(function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
             var stock = childSnapshot.val();
+            designationsUniques.add(stock.designation);
+          });
+
+          // Ajouter les désignations uniques au champ de sélection
+          designationsUniques.forEach(function (designation) {
             var option = document.createElement("option");
-            option.value = stock.designation;
-            option.text = stock.designation;
+            option.value = designation;
+            option.text = designation;
             designationSelect.add(option);
           });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Erreur lors de la récupération des données des stocks:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    // Fonction pour ajouter un stock (modifiée pour inclure la date)
+    function ajouterStock() {
+      var dateStock = document.getElementById("dateStock").value; // Récupérer la date du stock
+      var designation = document.getElementById("designationStock").value;
+      var quantiteAajouter = parseFloat(document.getElementById("quantiteInitialeStock").value) || 0;
+
+      // Vérifier si tous les champs sont remplis
+      if (dateStock === "" || designation === "" || isNaN(quantiteAajouter)) {
+        alert("Veuillez remplir tous les champs du formulaire de stock.");
+        return;
+      }
+
+      // Ajouter le nouveau stock dans Firebase
+      stocksRef.push({
+        dateStock: dateStock, // Ajouter la date du stock
+        designation: designation,
+        quantiteInitiale: quantiteAajouter,
+        quantiteRestante: quantiteAajouter,
+        quantiteVendues: 0
+      })
+        .then(function () {
+          // Réinitialiser le formulaire
+          document.getElementById("stockForm").reset();
+          // Mettre à jour le tableau des stocks
+          remplirTableauStocks();
+          // Mettre à jour le champ de sélection "Désignation" du formulaire des produits
+          remplirChampDesignation();
+
+          // Actualiser l'analyse après l'ajout d'un stock
+          analyserProduits();
+
+          alert("Stock ajouté avec succès !");
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de l'ajout du stock:", error);
           alert("Une erreur est survenue.");
         });
     }
 
     // Appeler la fonction pour remplir le champ de sélection au chargement de la page
-    window.onload = function() {
-      remplirTableauStocks();
+    window.onload = function () {
       remplirChampDesignation();
     };
+
+    // Écouteur d'événement pour le formulaire de stock
+    document.getElementById("stockForm").addEventListener("submit", function (event) {
+      event.preventDefault(); // Empêche le rechargement de la page
+      ajouterStock(); // Appel de la fonction pour ajouter le stock
+    });
+
+    // Fonction pour ouvrir la fenêtre flottante (modal) pour la modification des produits
+    function ouvrirModalProduit(key, product) {
+      // Remplir les champs du formulaire de modification avec les données du produit
+      document.getElementById("editProductKey").value = key;
+      document.getElementById("editDate").value = product.date;
+      document.getElementById("editQuantite").value = product.quantite;
+      document.getElementById("editDesignation").value = product.designation;
+      document.getElementById("editTypeArticle").value = product.typeArticle;
+      document.getElementById("editCategorie").value = product.categorie;
+      document.getElementById("editPrixVente").value = product.prixVente;
+      document.getElementById("editRAP").value = product.RAP;
+      document.getElementById("editPrixBrut").value = product.prixBrut;
+      document.getElementById("editTaux").value = product.taux;
+      document.getElementById("editNetBrut").value = product.netBrut;
+      document.getElementById("editFreight").value = product.freight;
+      document.getElementById("editDouaneTransport").value = product.douaneTransport;
+      document.getElementById("editFraisTransfert").value = product.fraisTransfert;
+      document.getElementById("editImpotDocument").value = product.impotDocument;
+      document.getElementById("editReparation").value = product.reparation;
+      document.getElementById("editTypeClient").value = product.typeClient;
+      document.getElementById("editVille").value = product.ville;
+      document.getElementById("editNumeroTelephone").value = product.numeroTelephone;
+      document.getElementById("editCommande").value = product.commande;
+      document.getElementById("editCoutReviens").value = product.coutReviens;
+      document.getElementById("editMargeBenefice").value = product.margeBenefice;
+
+      // Mettre à jour le champ de sélection "Désignation" dans le modal
+      var editDesignationSelect = document.getElementById("editDesignation");
+      editDesignationSelect.innerHTML = ''; // Effacer les options existantes
+
+      // Utiliser un Set pour stocker les désignations uniques
+      var editDesignationsUniques = new Set();
+
+      // Récupérer les désignations des stocks depuis Firebase
+      stocksRef.once('value')
+        .then(function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
+            var stock = childSnapshot.val();
+            editDesignationsUniques.add(stock.designation);
+          });
+
+          // Ajouter les désignations uniques au champ de sélection dans le modal
+          editDesignationsUniques.forEach(function (designation) {
+            var option = document.createElement("option");
+            option.value = designation;
+            option.text = designation;
+            editDesignationSelect.add(option);
+          });
+
+          // Sélectionner la désignation du produit en cours de modification
+          editDesignationSelect.value = product.designation;
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de la récupération des données des stocks:", error);
+          alert("Une erreur est survenue.");
+        });
+
+      document.getElementById("editProductModal").style.display = "block";
+    }
+
+    // Fonction pour fermer la fenêtre flottante (modal) pour la modification des produits
+    function fermerModalProduit() {
+      document.getElementById("editProductModal").style.display = "none";
+      // Réinitialiser le formulaire de modification
+      document.getElementById("editProductForm").reset();
+    }
+
+    // Fonction pour modifier un produit
+    function modifierProduit(key) {
+      var updatedProductData = {
+        date: document.getElementById("editDate").value,
+        quantite: document.getElementById("editQuantite").value,
+        designation: document.getElementById("editDesignation").value,
+        typeArticle: document.getElementById("editTypeArticle").value,
+        categorie: document.getElementById("editCategorie").value,
+        prixVente: document.getElementById("editPrixVente").value,
+        RAP: document.getElementById("editRAP").value,
+        netBrut: document.getElementById("editNetBrut").value,
+        prixBrut: document.getElementById("editPrixBrut").value,
+        taux: document.getElementById("editTaux").value,
+        freight: document.getElementById("editFreight").value,
+        douaneTransport: document.getElementById("editDouaneTransport").value,
+        fraisTransfert: document.getElementById("editFraisTransfert").value,
+        impotDocument: document.getElementById("editImpotDocument").value,
+        reparation: document.getElementById("editReparation").value,
+        typeClient: document.getElementById("editTypeClient").value,
+        ville: document.getElementById("editVille").value,
+        numeroTelephone: document.getElementById("editNumeroTelephone").value,
+        commande: document.getElementById("editCommande").value,
+        coutReviens: parseFloat(document.getElementById("editCoutReviens").value) || 0,
+        margeBenefice: parseFloat(document.getElementById("editMargeBenefice").value) || 0,
+      };
+
+      // Mettre à jour le produit dans Firebase
+      produitsRef.child(key).update(updatedProductData)
+        .then(function () {
+          // Fermer la fenêtre flottante
+          fermerModalProduit();
+
+          // Mettre à jour le tableau des produits
+          remplirTableau();
+
+          // Mettre à jour le tableau des debiteurs si nécessaire
+          if (parseFloat(updatedProductData.RAP) > 0) {
+            // Vérifier si le debiteur existe déjà
+            debiteursRef.orderByChild('numeroTelephone').equalTo(updatedProductData.numeroTelephone).once(
+              'value', function (snapshot) {
+                if (snapshot.exists()) {
+                  // Mettre à jour le debiteur existant
+                  snapshot.forEach(function (childSnapshot) {
+                    debiteursRef.child(childSnapshot.key).update({
+                      date: updatedProductData.date,
+                      designation: updatedProductData.designation,
+                      RAP: updatedProductData.RAP
+                    });
+                  });
+                } else {
+                  // Ajouter un nouveau debiteur
+                  debiteursRef.push({
+                    date: updatedProductData.date,
+                    designation: updatedProductData.designation,
+                    numeroTelephone: updatedProductData.numeroTelephone,
+                    RAP: updatedProductData.RAP
+                  });
+                }
+              });
+          } else {
+            // Supprimer le debiteur si RAP est 0
+            debiteursRef.orderByChild('numeroTelephone').equalTo(updatedProductData.numeroTelephone).once(
+              'value', function (snapshot) {
+                if (snapshot.exists()) {
+                  snapshot.forEach(function (childSnapshot) {
+                    debiteursRef.child(childSnapshot.key).remove();
+                  });
+                }
+              });
+          }
+
+          // Mettre à jour le tableau des debiteurs
+          remplirTableauDebiteurs();
+
+          // Mettre à jour le tableau des stocks
+          mettreAJourStocks(updatedProductData.designation, updatedProductData.quantite);
+          remplirTableauStocks();
+
+          // Actualiser l'analyse après la modification d'un produit
+          analyserProduits();
+
+          alert("Produit modifié avec succès !");
+        })
+        .catch(function (error) {
+          console.error("Erreur lors de la modification du produit:", error);
+          alert("Une erreur est survenue.");
+        });
+    }
+
+    // Écouteur d'événement pour le formulaire de modification du produit
+    document.getElementById("editProductForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var key = document.getElementById("editProductKey").value;
+      modifierProduit(key);
+    });
+
+    // Fonction pour trier le tableau (modifiée pour être générique)
+    function trierTableau(tableId, colonne) {
+      var tableau, lignes, changeant, i, x, y, shouldSwitch, direction;
+      tableau = document.getElementById(tableId);
+      changeant = true;
+      direction = "asc";
+      while (changeant) {
+        changeant = false;
+        lignes = tableau.rows;
+        for (i = 1; i < (lignes.length - 1); i++) {
+          shouldSwitch = false;
+          x = lignes[i].getElementsByTagName("TD")[colonneIndex(tableId, colonne)];
+          y = lignes[i + 1].getElementsByTagName("TD")[colonneIndex(tableId, colonne)];
+          if (direction === "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          } else if (direction === "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          lignes[i].parentNode.insertBefore(lignes[i + 1], lignes[i]);
+          changeant = true;
+          direction = direction === "asc" ? "desc" : "asc";
+        }
+      }
+    }
+
+    // Fonction pour obtenir l'index de la colonne en fonction du nom de la colonne (corrigée)
+    function colonneIndex(tableId, colonne) {
+      var entete = document.getElementById(tableId).getElementsByTagName("TH");
+      for (var i = 0; i < entete.length; i++) {
+        if (entete[i].textContent.trim() === colonne) {
+          return i;
+        }
+      }
+      return -1; // Retourner -1 si la colonne n'est pas trouvée
+    }
+
+    // Fonction pour rechercher dans le tableau des produits
+    function rechercherProduits() {
+      var searchTerm = document.getElementById("searchInputProduits").value.toLowerCase();
+      var table = document.getElementById("produitTable");
+      var rows = table.getElementsByTagName("tr");
+
+      for (var i = 1; i < rows.length; i++) { // Commencer à partir de 1 pour ignorer l'en-tête
+        var shouldShow = false;
+        var cells = rows[i].getElementsByTagName("td");
+        for (var j = 0; j < cells.length; j++) {
+          var cellText = cells[j].textContent.toLowerCase();
+          if (cellText.indexOf(searchTerm) > -1) {
+            shouldShow = true;
+            break;
+          }
+        }
+        rows[i].style.display = shouldShow ? "" : "none";
+      }
+    }
+
+    // Fonction pour rechercher dans le tableau des stocks
+    function rechercherStocks() {
+      var searchTerm = document.getElementById("searchInputStocks").value.toLowerCase();
+      var table = document.getElementById("stockTable");
+      var rows = table.getElementsByTagName("tr");
+
+      for (var i = 1; i < rows.length; i++) { // Commencer à partir de 1 pour ignorer l'en-tête
+        var shouldShow = false;
+        var cells = rows[i].getElementsByTagName("td");
+        for (var j = 0; j < cells.length; j++) {
+          var cellText = cells[j].textContent.toLowerCase();
+          if (cellText.indexOf(searchTerm) > -1) {
+            shouldShow = true;
+            break;
+          }
+        }
+        rows[i].style.display = shouldShow ? "" : "none";
+      }
+    }
+
+    // Fonction pour rechercher dans le tableau des debiteurs
+    function rechercherDebiteurs() {
+      var searchTerm = document.getElementById("searchInputDebiteurs").value.toLowerCase();
+      var table = document.getElementById("debiteurTable");
+      var rows = table.getElementsByTagName("tr");
+
+      for (var i = 1; i < rows.length; i++) { // Commencer à partir de 1 pour ignorer l'en-tête
+        var shouldShow = false;
+        var cells = rows[i].getElementsByTagName("td");
+        for (var j = 0; j < cells.length; j++) {
+          var cellText = cells[j].textContent.toLowerCase();
+          if (cellText.indexOf(searchTerm) > -1) {
+            shouldShow = true;
+            break;
+          }
+        }
+        rows[i].style.display = shouldShow ? "" : "none";
+      }
+    }
+
+    // Fonction pour mettre à jour les stocks
+    function mettreAJourStocks(designation, quantite) {
+      // Trouver le stock correspondant à la désignation
+      stocksRef.orderByChild('designation').equalTo(designation).once('value', function (snapshot) {
+        if (snapshot.exists()) {
+          // Mettre à jour la quantité restante du stock
+          snapshot.forEach(function (childSnapshot) {
+            var stock = childSnapshot.val();
+            var nouvelleQuantiteRestante = stock.quantiteRestante + parseFloat(quantite);
+            var nouvelleQuantiteVendues = stock.quantiteVendues - parseFloat(quantite);
+
+            // Mettre à jour les valeurs dans Firebase
+            stocksRef.child(childSnapshot.key).update({
+              quantiteRestante: nouvelleQuantiteRestante,
+              quantiteVendues: nouvelleQuantiteVendues
+            });
+          });
+        }
+      });
+    }
+
+    // Fonction pour masquer toutes les sections
+    function masquerToutesSections() {
+      document.getElementById("detailsSection").style.display = "none";
+      document.getElementById("tendancesSection").style.display = "none";
+      document.getElementById("analysesSection").style.display = "none";
+      document.getElementById("debiteursSection").style.display = "none";
+      document.getElementById("stocksSection").style.display = "none";
+    }
+
+    // Fonction pour ouvrir le modal de filtrage (modifiée)
+    function ouvrirModalFiltrage(tableId, colonne, modalId) {
+      var filterModal = document.getElementById(modalId);
+      filterModal.innerHTML = ''; // Effacer le contenu précédent du modal
+
+      // Créer les éléments du formulaire de filtrage
+      var label = document.createElement("label");
+      label.textContent = "Filtrer par " + colonne + ":";
+      filterModal.appendChild(label);
+
+      var input = document.createElement("input");
+      input.type = "text";
+      input.id = "filterInput" + modalId;
+
+      // Ajouter un placeholder spécifique pour les colonnes de date
+      if (colonne === "date" || colonne === "dateStock") {
+        input.placeholder = "AAAA-MM-JJ (ou <, >, =)";
+      }
+
+      filterModal.appendChild(input);
+
+      var button = document.createElement("button");
+      button.textContent = "Filtrer";
+
+      // Attacher la fonction de filtrage au clic du bouton
+      button.addEventListener('click', function () {
+        var inputValue = input.value;
+        filtrerTableau(tableId, colonne, inputValue);
+        fermerModalFiltrage(modalId);
+      });
+
+      filterModal.appendChild(button);
+
+      // Positionner le modal par rapport à l'icône (modifié)
+      var icon = event.target;
+      var rect = icon.getBoundingClientRect();
+      filterModal.style.display = "block";
+      filterModal.style.left = (rect.left + window.scrollX) + "px"; // Ajouter le défilement horizontal
+      filterModal.style.top = (rect.bottom + window.scrollY) + "px"; // Afficher en dessous de l'icône, en tenant compte du défilement vertical
+    }
+
+    // Fonction pour fermer le modal de filtrage
+    function fermerModalFiltrage(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    // Fonction pour filtrer le tableau (modifiée pour gérer correctement les dates)
+    function filtrerTableau(tableId, colonne, filtre) {
+      var tableau, lignes, i, x, shouldShow;
+      tableau = document.getElementById(tableId);
+      lignes = tableau.rows;
+      filtre = filtre.toLowerCase(); // Convertir le filtre en minuscules pour une comparaison insensible à la casse
+
+      for (i = 1; i < lignes.length; i++) { // Commencer à 1 pour ignorer l'en-tête
+        x = lignes[i].getElementsByTagName("TD")[colonneIndex(tableId, colonne)];
+        var cellValue = x.textContent.toLowerCase();
+
+        // Gestion des dates et des opérateurs de comparaison
+        if (colonne === "date" || colonne === "dateStock") {
+          if (filtre.startsWith("<")) {
+            shouldShow = new Date(cellValue) < new Date(filtre.substring(1));
+          } else if (filtre.startsWith(">")) {
+            shouldShow = new Date(cellValue) > new Date(filtre.substring(1));
+          } else if (filtre.startsWith("=")) {
+            shouldShow = new Date(cellValue).getTime() === new Date(filtre.substring(1)).getTime();
+          } else {
+            shouldShow = cellValue.indexOf(filtre) > -1;
+          }
+        } else {
+          shouldShow = cellValue.indexOf(filtre) > -1;
+        }
+
+        lignes[i].style.display = shouldShow ? "" : "none";
+      }
+    }
   </script>
 
 </body>
